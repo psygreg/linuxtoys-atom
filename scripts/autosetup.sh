@@ -3,9 +3,29 @@
 optimizer () {
 
     if [ ! -f /.autopatch.state ]; then
+        # filtered cachyos systemd configs
         wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
         rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+        # shader booster
         local script="shader-patcher-atom" && _invoke_
+        # automatic updating
+        local AUTOPOLICY="stage"
+        sudo cp /etc/rpm-ostreed.conf /etc/rpm-ostreed.conf.bak
+        if grep -q "^AutomaticUpdatePolicy=" /etc/rpm-ostreed.conf; then
+            sudo sed -i "s/^AutomaticUpdatePolicy=.*/AutomaticUpdatePolicy=${AUTOPOLICY}/" /etc/rpm-ostreed.conf
+        else
+            sudo awk -v policy="$AUTOPOLICY" '
+            /^\[Daemon\]/ {
+                print
+                print "AutomaticUpdatePolicy=" policy
+                next
+            }
+            { print }
+            ' /etc/rpm-ostreed.conf | sudo tee /etc/rpm-ostreed.conf > /dev/null
+        fi
+        echo "AutomaticUpdatePolicy set to: $AUTOPOLICY"
+        sudo systemctl enable rpm-ostreed-automatic.timer --now
+        # save autopatch state
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
     else
