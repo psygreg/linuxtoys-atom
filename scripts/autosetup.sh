@@ -5,6 +5,7 @@ optimizer () {
     if [ ! -f /.autopatch.state ]; then
         wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
         rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+        local script="shader-patcher-atom" && _invoke_
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
     else
