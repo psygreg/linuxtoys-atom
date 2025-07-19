@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# TODO fix crashing
 # initialize variables for reboot status
 flatpak_run=""
 
