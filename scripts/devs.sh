@@ -3,15 +3,6 @@
 # initialize variables for reboot status
 flatpak_run=""
 
-# TODO GITHUB CLI
-github_cli () {
-
-	curl -O https://cli.github.com/packages/rpm/gh-cli.repo
-	sudo install -o 0 -g 0 -m644 gh-cli.repo /etc/yum.repos.d/gh-cli.repo
-	# add 'gh' to rpm-ostree install array
-
-}
-
 # supermenu checklist
 dsupermenu () {
 
