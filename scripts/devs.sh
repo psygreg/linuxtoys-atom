@@ -1,8 +1,8 @@
 #!/bin/bash
 # TODO fix crashing
+
 # initialize variables for reboot status
 flatpak_run=""
-
 # supermenu checklist
 dsupermenu () {
 
@@ -27,7 +27,7 @@ dsupermenu () {
         local selection
         selection=$(whiptail --title "$msg131" --checklist \
             "$msg131" 20 78 15 \
-						"Pulsar" "$msg261" $code_status \
+            "Pulsar" "$msg261" $plsr_status \
             "VSCodium" "$msg142" $codium_status \
             "NeoVim" "$msg140" $nvim_status \
             "OhMyBash" "$msg226" $omb_status \
