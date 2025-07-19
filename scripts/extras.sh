@@ -236,9 +236,10 @@ while :; do
         "4" "$msg177" \
         "5" "iNet Wireless Daemon" \
         "6" "$msg260" \
-        "7" "$msg078" \
-        "8" "$msg209" \
-        "9" "$msg059" 3>&1 1>&2 2>&3)
+        "7" "$msg264" \
+        "8" "$msg078" \
+        "9" "$msg209" \
+        "10" "$msg059" 3>&1 1>&2 2>&3)
 
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -254,9 +255,10 @@ while :; do
     4) psaver ;;
     5) iwd_summon ;;
     6) codecfixes ;;
-    7) nvidia_in ;;
-    8) lsw_in ;;
-    9 | q) break ;;
+    7) ostree_autoupd ;;
+    8) nvidia_in ;;
+    9) lsw_in ;;
+    10 | q) break ;;
     *) echo "Invalid Option" ;;
     esac
 done
