@@ -1,0 +1,141 @@
+## turbobash library
+. /etc/os-release
+
+# whiptail color palette
+export NEWT_COLORS='
+    root=white,black
+    border=black,lightgray
+    window=black,lightgray
+    shadow=black,gray
+    title=black,lightgray
+    button=black,red
+    actbutton=white,red
+    checkbox=black,lightgray
+    actcheckbox=black,red
+    entry=black,lightgray
+    label=black,lightgray
+    listbox=black,lightgray
+    actlistbox=black,red
+    textbox=black,lightgray
+    acttextbox=black,red
+    helpline=white,red
+    roottext=black,lightgray
+'
+
+# logger -- define variable 'logfile' as the full path to log file
+_log_ () {
+
+    exec 2> >(tee "$logfile" >&2)
+
+}
+
+# flatpak installation
+_flatpak_ () {
+
+    if [[ -n "$_flatpaks" ]]; then
+        for flat in "${_flatpaks[@]}"; do
+            flatpak install --or-update -u -y $flat
+        done
+    fi
+
+}
+
+# install through rpm-ostree ## ONLY USE WHEN PACKAGES ARE NOT IMPORTANT TO THE SYSTEM!
+_install_ () {
+
+    declare -a _to_install=()
+    if [[ -n "$_packages" ]]; then
+        for pkg in "${_packages[@]}"; do
+            if ! rpm -qi "$pkg" &>/dev/null; then
+                _to_install+=("$pkg")
+            fi
+        done
+        packages_str="${_to_install[*]}"
+        if [[ -n "$packages_str" ]]; then
+            rpm-ostree install -yA "$packages_str"
+        else
+            return 1
+        fi
+    fi
+
+}
+
+# language detect -- add elif for each language in the last if statement
+_lang_ () {
+
+    local lang="${LANG:0:2}"
+    local available=("pt")
+    local ulang=""
+    langfile=""
+
+    if [[ " ${available[*]} " == *"$lang"* ]]; then
+        ulang="$lang"
+    else
+        ulang="en"
+    fi
+    if [ $ulang == "pt" ]; then
+        langfile="pt"
+    else
+        langfile="en"
+    fi
+
+}
+
+# subscript invoker
+_invoke_ () {
+
+    if [[ -n "$script" ]]; then
+        bash <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/scripts/${script}.sh)
+    fi
+
+}
+
+# whiptail messagebox
+_msgbox_ () {
+
+    whiptail --title "$title" --msgbox "$msg" 12 78
+
+}
+
+## non-fastbash functions can be added HERE
+
+# flatpak enabler
+flatpak_in_lib () {
+
+    if command -v flatpak &> /dev/null; then
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo --user
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo --system
+    else
+        if [[ "$ID_LIKE" == *debian* ]] || [[ "$ID_LIKE" == *ubuntu* ]] || [ "$ID" == "debian" ] || [ "$ID" == "ubuntu" ]; then
+            sudo apt install -y flatpak
+        elif [[ "$ID" =~ ^(arch|cachyos)$ ]] || [[ "$ID_LIKE" == *arch* ]] || [[ "$ID_LIKE" == *archlinux* ]]; then
+            sudo pacman -S --noconfirm flatpak
+        fi
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo --user
+        flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo --system
+    fi
+
+}
+
+# power optimizer for laptops
+psave_lib () {
+
+    local _packages=(powertop tlp tlp-rdw smartmontools ethtool)
+    _install_
+    sudo systemctl enable tlp.service
+    sudo systemctl enable NetworkManager-dispatcher.service
+    sudo systemctl mask systemd-rfkill.service systemd-rfkill.socket
+    cd $HOME
+    git clone https://github.com/AdnanHodzic/auto-cpufreq.git
+    cd auto-cpufreq && sudo ./auto-cpufreq-installer
+    cd ..
+    sleep 1
+    rm -rf auto-cpufreq
+    sudo auto-cpufreq --install
+    flatpak_in_lib
+    flatpak install --or-update -y com.github.d4nj1.tlpui --system
+    local title="$msg006"
+    local msg="$msg036"
+    _msgbox_
+
+}

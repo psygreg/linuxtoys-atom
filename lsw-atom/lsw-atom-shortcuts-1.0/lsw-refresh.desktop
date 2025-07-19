@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=WinApps Refresh
+Type=Application
+Exec=/usr/bin/lsw/lsw-refresh.sh
+Terminal=true
+Icon=/usr/share/icons/hicolor/scalable/apps/lsw-refresh.png
+Comment=Refresh Linux Subsystem for Windows' WinApps app list
+NoDisplay=false
+Categories=Development
