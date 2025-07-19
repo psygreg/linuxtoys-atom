@@ -104,6 +104,35 @@ psaver () {
 
 }
 
+# enable rpm-ostree automatic updating
+ostree_autoupd () {
+
+    if whiptail --title "OSTree Auto-Update" --yesno "$msg263" 12 78; then
+        AUTOPOLICY="stage"
+        # backup original config
+        sudo cp /etc/rpm-ostreed.conf /etc/rpm-ostreed.conf.bak
+        # update or insert the AutomaticUpdatePolicy line using sudo tee
+        if grep -q "^AutomaticUpdatePolicy=" /etc/rpm-ostreed.conf; then
+        # Replace existing line
+            sudo sed -i "s/^AutomaticUpdatePolicy=.*/AutomaticUpdatePolicy=${AUTOPOLICY}/" /etc/rpm-ostreed.conf
+        else
+        # Append under the [Daemon] section
+            sudo awk -v policy="$AUTOPOLICY" '
+            /^\[Daemon\]/ {
+                print
+                print "AutomaticUpdatePolicy=" policy
+                next
+            }
+            { print }
+            ' /etc/rpm-ostreed.conf | sudo tee /etc/rpm-ostreed.conf > /dev/null
+        fi
+        echo "AutomaticUpdatePolicy set to: $AUTOPOLICY"
+        # enable timer service
+        sudo systemctl enable rpm-ostreed-automatic.timer --now
+    fi
+
+}
+
 # optimized systemd configuration files from CachyOS
 optimizer_ () {
 
