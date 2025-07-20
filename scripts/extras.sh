@@ -193,7 +193,7 @@ flatpak_enabler () {
     if [ ! -f "$CONF_LOC" ]; then
         # make sure target dir exists
         mkdir -p ${HOME}/.config/lsfg-vk/
-        wget https://raw.githubusercontent.com/PancakeTAS/lsfg-vk/refs/heads/develop/conf.toml
+        wget https://raw.githubusercontent.com/psygreg/lsfg-vk/refs/heads/develop/conf.toml
         mv conf.toml ${HOME}/.config/lsfg-vk/
     fi
     # register dll location in config file
@@ -250,7 +250,13 @@ lsfg_vk_in () {
     _msgbox_
     if whiptail --title "LSFG-VK" --yesno "$msg250" 12 78; then
         # add check for DLL location
-        DLL_FIND=$(find $HOME -name Lossless.dll | head -n 1) || local title="LSFG-VK" && local msg="Lossless.dll not found. Did you install Lossless Scaling?" && _msgbox_ && return 1
+        DLL_FIND=$(find $HOME -name Lossless.dll | head -n 1)
+        if [ -z "$DLL_FIND" ]; then
+            local title="LSFG-VK"
+            local msg="Lossless.dll not found. Did you install Lossless Scaling?"
+            _msgbox_
+            return 1
+        fi
         curl -sSf https://pancake.gay/lsfg-vk.sh | sh
         if [ $? -eq 0 ]; then
             # Ask user for path to Lossless.dll
