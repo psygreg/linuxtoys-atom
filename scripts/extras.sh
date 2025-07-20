@@ -59,10 +59,16 @@ nvidia_in () {
             fi
 
             case $CHOICE in
-            0) rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+            0) local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
+                if [ -n "$rpmfusion_status" ]; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                fi
                 rpm-ostree install akmod-nvidia xorg-x11-drv-nvidia-cuda
                 sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1 ;;
-            1) rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+            1) local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
+                if [ -n "$rpmfusion_status" ]; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                fi
                 rpm-ostree install xorg-x11-drv-nvidia-470xx akmod-nvidia-470xx xorg-x11-drv-nvidia-470xx-cuda
                 sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1 ;;
             2 | q) break ;;
@@ -272,6 +278,18 @@ lsfg_vk_in () {
 
 }
 
+# install RPMFusion
+rpmfusion_in () {
+
+    if whiptail --title "RPMFusion" --yesno "$msg266" 12 78; then
+        local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
+        if [ -n "$rpmfusion_status" ]; then
+            sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+        fi
+    fi
+
+}
+
 # runtime
 . /etc/os-release
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
@@ -287,11 +305,12 @@ while :; do
         "3" "$msg258" \
         "4" "$msg177" \
         "5" "iNet Wireless Daemon" \
-        "6" "$msg260" \
-        "7" "$msg264" \
-        "8" "$msg078" \
-        "9" "$msg209" \
-        "10" "$msg059" 3>&1 1>&2 2>&3)
+        "6" "$msg265" \
+        "7" "$msg260" \
+        "8" "$msg264" \
+        "9" "$msg078" \
+        "10" "$msg209" \
+        "11" "$msg059" 3>&1 1>&2 2>&3)
 
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -306,11 +325,12 @@ while :; do
     3) optimizer_ ;;
     4) psaver ;;
     5) iwd_summon ;;
-    6) codecfixes ;;
-    7) ostree_autoupd ;;
-    8) nvidia_in ;;
-    9) lsw_in ;;
-    10 | q) break ;;
+    6) rpmfusion_in ;;
+    7) codecfixes ;;
+    8) ostree_autoupd ;;
+    9) nvidia_in ;;
+    10) lsw_in ;;
+    11 | q) break ;;
     *) echo "Invalid Option" ;;
     esac
 done

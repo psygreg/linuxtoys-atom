@@ -25,6 +25,11 @@ optimizer () {
         fi
         echo "AutomaticUpdatePolicy set to: $AUTOPOLICY"
         sudo systemctl enable rpm-ostreed-automatic.timer --now
+        # install rpmfusion if absent
+        local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
+        if [ -n "$rpmfusion_status" ]; then
+            sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+        fi
         # save autopatch state
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
