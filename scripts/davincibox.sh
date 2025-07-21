@@ -9,8 +9,9 @@ davinciboxdeps () {
     local intelGPU=$(lspci | grep -Ei 'vga|3d' | grep -Ei 'intel|iris|xe')
     if [[ -n "$nvGPU" ]]; then
         # add repository and install nvidia container toolkit
-        curl -s -L https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo | \
-        sudo tee /etc/yum.repos.d/nvidia-container-toolkit.repo
+        curl -O https://nvidia.github.io/libnvidia-container/stable/rpm/nvidia-container-toolkit.repo
+        sudo install -o 0 -g 0 nvidia-container-toolkit.repo /etc/yum.repos.d/nvidia-container-toolkit.repo
+        rm nvidia-container-toolkit.repo
         NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
         _packages+=("nvidia-container-toolkit-${NVIDIA_CONTAINER_TOOLKIT_VERSION} nvidia-container-toolkit-base-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container-tools-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container1-${NVIDIA_CONTAINER_TOOLKIT_VERSION}")
     elif [[ -n "$amdGPU" ]]; then

@@ -95,12 +95,14 @@ install_native () {
     if [[ -n "$_dckr" ]]; then
         curl -O https://download.docker.com/linux/fedora/docker-ce.repo
         sudo install -o 0 -g 0 -m644 docker-ce.repo /etc/yum.repos.d/docker-ce.repo
+        rm docker-ce.repo
         _packages+=("docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin")
     fi
     # add openrazer
     if [[ -n "$_oprzr" ]]; then
         curl -O https://openrazer.github.io/hardware:razer.repo
         sudo install -o 0 -g 0 -m644 hardware:razer.repo /etc/yum.repos.d/hardware:razer.repo
+        rm razer.repo
         _packages+=("openrazer-meta kernel-devel")
     fi
     # add mesa openCL
