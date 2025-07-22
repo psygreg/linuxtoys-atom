@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=LinuxToys Atom
+Type=Application
+Exec=linuxtoys
+Terminal=true
+Icon=linuxtoys-atom
+Comment=A set of tools for Linux presented in a user-friendly way, now for rpm-ostree
+NoDisplay=false
+Categories=Development
