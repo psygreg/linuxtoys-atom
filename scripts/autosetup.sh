@@ -30,6 +30,10 @@ optimizer () {
         if [ -n "$rpmfusion_status" ]; then
             sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
         fi
+        # fix alive timeout for Gnome
+        if echo "$XDG_CURRENT_DESKTOP" | grep -qi 'gnome'; then
+            dconf write /org/gnome/mutter/check-alive-timeout 15000
+        fi
         # save autopatch state
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
