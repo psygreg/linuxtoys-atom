@@ -113,28 +113,34 @@ psaver () {
 # enable rpm-ostree automatic updating
 ostree_autoupd () {
 
-    if whiptail --title "OSTree Auto-Update" --yesno "$msg263" 12 78; then
-        AUTOPOLICY="stage"
-        # backup original config
-        sudo cp /etc/rpm-ostreed.conf /etc/rpm-ostreed.conf.bak
-        # update or insert the AutomaticUpdatePolicy line using sudo tee
-        if grep -q "^AutomaticUpdatePolicy=" /etc/rpm-ostreed.conf; then
-        # Replace existing line
-            sudo sed -i "s/^AutomaticUpdatePolicy=.*/AutomaticUpdatePolicy=${AUTOPOLICY}/" /etc/rpm-ostreed.conf
-        else
-        # Append under the [Daemon] section
-            sudo awk -v policy="$AUTOPOLICY" '
-            /^\[Daemon\]/ {
-                print
-                print "AutomaticUpdatePolicy=" policy
-                next
-            }
-            { print }
-            ' /etc/rpm-ostreed.conf | sudo tee /etc/rpm-ostreed.conf > /dev/null
+    if [ ! -f /.autopatch.state ]; then
+        if whiptail --title "OSTree Auto-Update" --yesno "$msg263" 12 78; then
+            AUTOPOLICY="stage"
+            # backup original config
+            sudo cp /etc/rpm-ostreed.conf /etc/rpm-ostreed.conf.bak
+            # update or insert the AutomaticUpdatePolicy line using sudo tee
+            if grep -q "^AutomaticUpdatePolicy=" /etc/rpm-ostreed.conf; then
+                # Replace existing line
+                sudo sed -i "s/^AutomaticUpdatePolicy=.*/AutomaticUpdatePolicy=${AUTOPOLICY}/" /etc/rpm-ostreed.conf
+            else
+                # Append under the [Daemon] section
+                sudo awk -v policy="$AUTOPOLICY" '
+                /^\[Daemon\]/ {
+                    print
+                    print "AutomaticUpdatePolicy=" policy
+                    next
+                }
+                { print }
+                ' /etc/rpm-ostreed.conf | sudo tee /etc/rpm-ostreed.conf > /dev/null
+            fi
+            echo "AutomaticUpdatePolicy set to: $AUTOPOLICY"
+            # enable timer service
+            sudo systemctl enable rpm-ostreed-automatic.timer --now
         fi
-        echo "AutomaticUpdatePolicy set to: $AUTOPOLICY"
-        # enable timer service
-        sudo systemctl enable rpm-ostreed-automatic.timer --now
+    else
+        local title="AutoPatcher"
+        local msg="$msg234"
+        _msgbox_
     fi
 
 }
@@ -142,11 +148,17 @@ ostree_autoupd () {
 # optimized systemd configuration files from CachyOS
 optimizer_ () {
 
-    if whiptail --title "$msg006" --yesno "$msg257" 8 78; then
-        wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
-        rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
-        local title="$msg006"
-        local msg="$msg036"
+    if [ ! -f /.autopatch.state ]; then
+        if whiptail --title "$msg006" --yesno "$msg257" 8 78; then
+            wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+            rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+            local title="$msg006"
+            local msg="$msg036"
+            _msgbox_
+        fi
+    else
+        local title="AutoPatcher"
+        local msg="$msg234"
         _msgbox_
     fi
 
@@ -281,11 +293,17 @@ lsfg_vk_in () {
 # install RPMFusion
 rpmfusion_in () {
 
-    if whiptail --title "RPMFusion" --yesno "$msg266" 12 78; then
-        local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
-        if [ -n "$rpmfusion_status" ]; then
-            sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    if [ ! -f /.autopatch.state ]; then
+        if whiptail --title "RPMFusion" --yesno "$msg266" 12 78; then
+            local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
+            if [ -n "$rpmfusion_status" ]; then
+                sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+            fi
         fi
+    else
+        local title="AutoPatcher"
+        local msg="$msg234"
+        _msgbox_
     fi
 
 }
