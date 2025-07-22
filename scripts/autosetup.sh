@@ -32,7 +32,7 @@ optimizer () {
         fi
         # fix alive timeout for Gnome
         if echo "$XDG_CURRENT_DESKTOP" | grep -qi 'gnome'; then
-            dconf write /org/gnome/mutter/check-alive-timeout 15000
+            dconf write /org/gnome/mutter/check-alive-timeout 20000
         fi
         # save autopatch state
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
