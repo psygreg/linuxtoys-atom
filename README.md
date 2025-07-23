@@ -1,8 +1,14 @@
 # LinuxToys Atom
-Your trusty multitool now on Fedora-based immutable operating systems. Work in progress.
+Your trusty multitool now on Fedora-based immutable operating systems.
 
 THIS SHOULD NOT BE USED OUTSIDE OF `rpm-ostree`-based SYSTEMS!
 
 ## Usage
+### AppImage (recommended)
+- Download the AppImage from the latest [Release](https://github.com/psygreg/linuxtoys-atom/releases).
+- Set is as executable by using the switch in the properties window from GUI, or `chmod +x LinuxToys_Atom-x86_64.AppImage`
+- Run it. All dependencies are self-contained within the AppImage.
+
+### Direct
 - Make sure dependencies are installed: `bash newt curl wget git`
-- Run it directly with `bash <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/main/linuxtoys.sh)`.
+- Run it with `curl -fsSL https://raw.githubusercontent.com/psygreg/linuxtoys-atom/main/linuxtoys.sh | bash`.
