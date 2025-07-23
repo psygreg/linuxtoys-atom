@@ -1,7 +1,10 @@
 # LinuxToys Atom
 Your trusty multitool now on Fedora-based immutable operating systems.
 
-THIS SHOULD NOT BE USED OUTSIDE OF `rpm-ostree`-based SYSTEMS!
+## Compabitibilty
+- Fedora Silverblue, Kinoite and CoreOS
+- Bazzite
+- Universal Blue system images
 
 ## Usage
 ### AppImage (recommended)
