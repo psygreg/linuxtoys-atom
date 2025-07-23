@@ -14,4 +14,4 @@ Your trusty multitool now on Fedora-based immutable operating systems.
 
 ### Direct
 - Make sure dependencies are installed: `bash newt curl wget git`
-- Run: `curl -fsSL https://raw.githubusercontent.com/psygreg/linuxtoys-atom/main/linuxtoys.sh | bash`
+- Run it with the command `curl -fsSL https://raw.githubusercontent.com/psygreg/linuxtoys-atom/main/linuxtoys.sh | bash`
