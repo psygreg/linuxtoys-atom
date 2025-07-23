@@ -1,13 +1,12 @@
 #!/bin/bash
-HERE="$(dirname "$(readlink -f "$0")")"
-export LD_LIBRARY_PATH="$HERE/usr/lib:$LD_LIBRARY_PATH"
-export PATH="$HERE/usr/bin:$PATH"
+export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
+export PATH="$APPDIR/usr/bin:$PATH"
 
 # if not running in terminal (no tty), try to spawn one
 if [ ! -t 1 ]; then
     for term in ptyxis gnome-terminal konsole xfce4-terminal x-terminal-emulator xterm; do
         if command -v "$term" >/dev/null 2>&1; then
-            exec "$term" -e "$HERE/usr/bin/linuxtoys" "$@"
+            exec "$term" -e "$APPDIR/usr/bin/linuxtoys" "$@"
             exit 0
         fi
     done
@@ -16,4 +15,4 @@ if [ ! -t 1 ]; then
 fi
 
 # if already in terminal
-exec "$HERE/usr/bin/linuxtoys" "$@"
+exec "$APPDIR/usr/bin/linuxtoys" "$@"
