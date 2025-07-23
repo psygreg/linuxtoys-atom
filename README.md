@@ -2,9 +2,9 @@
 Your trusty multitool now on Fedora-based immutable operating systems.
 
 ## Compabitibilty
-- Fedora Silverblue, Kinoite and CoreOS
-- Bazzite
-- Universal Blue system images
+- Fedora ***Silverblue***, ***Kinoite*** and ***CoreOS***
+- ***Bazzite***
+- ***Universal Blue*** system images
 
 ## Usage
 ### AppImage (recommended)
