@@ -36,8 +36,33 @@ lucidglyph_in () {
 
 }
 
+# enable signing of kernel modules (akmods) like Nvidia and VirtualBox
+akmod_sb () {
+
+    if ! rpm -qi "akmods-keys" &>/dev/null; then
+        if whiptail --title "$msg006" --yesno "$msg267" 12 78; then
+            _packages=(rpmdevtools akmods)
+            _install_
+            sudo kmodgenca
+            sudo mokutil --import /etc/pki/akmods/certs/public_key.der
+            git clone https://github.com/CheariX/silverblue-akmods-keys
+            cd silverblue-akmods-keys
+            sudo bash setup.sh
+            rpm-ostree install akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
+            local title="$msg006"
+            local msg="$msg268"
+            _msgbox_
+            exit 0
+        fi
+    else
+        local title="$msg030"
+        local msg="$msg234"
+        _msgbox_
+    fi
+
+}
+
 # Nvidia driver installer for Fedora/SUSE/Debian - it is a montrosity, but it works, trust me bro
-## TODO make compatible with secure boot
 nvidia_in () {
 
     local title="$msg006"
@@ -48,9 +73,10 @@ nvidia_in () {
         while :; do
 
             CHOICE=$(whiptail --title "$msg006" --menu "$msg067" 25 78 16 \
-            "0" "$msg068" \
-            "1" "$msg069" \
-            "2" "$msg070" 3>&1 1>&2 2>&3)
+            "0" "$msg269"
+            "1" "$msg068" \
+            "2" "$msg069" \
+            "3" "$msg070" 3>&1 1>&2 2>&3)
 
             exitstatus=$?
             if [ $exitstatus != 0 ]; then
@@ -59,19 +85,80 @@ nvidia_in () {
             fi
 
             case $CHOICE in
-            0) local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
-                if [ -n "$rpmfusion_status" ]; then
-                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+            0) if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+                fi
+                if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                fi
+                if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
+                    if ! rpm -qi "akmods-keys" &>/dev/null; then
+                        _packages=(rpmdevtools akmods)
+                        _install_
+                        sudo kmodgenca
+                        sudo mokutil --import /etc/pki/akmods/certs/public_key.der
+                        git clone https://github.com/CheariX/silverblue-akmods-keys
+                        cd silverblue-akmods-keys
+                        echo "%_with_kmod_nvidia_open 1" >> macros.kmodtool
+                        sudo bash setup.sh
+                        rpm-ostree install -yA akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
+                    fi
+                fi
+                rpm-ostree install akmod-nvidia-open xorg-x11-drv-nvidia-cuda
+                sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1
+                local title="Nvidia Drivers"
+                local msg="$msg036"
+                _msgbox_
+                exit 0 ;;
+            1) if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+                fi
+                if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                fi
+                if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
+                    if ! rpm -qi "akmods-keys" &>/dev/null; then
+                        _packages=(rpmdevtools akmods)
+                        _install_
+                        sudo kmodgenca
+                        sudo mokutil --import /etc/pki/akmods/certs/public_key.der
+                        git clone https://github.com/CheariX/silverblue-akmods-keys
+                        cd silverblue-akmods-keys
+                        sudo bash setup.sh
+                        rpm-ostree install -yA akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
+                    fi
                 fi
                 rpm-ostree install akmod-nvidia xorg-x11-drv-nvidia-cuda
-                sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1 ;;
-            1) local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
-                if [ -n "$rpmfusion_status" ]; then
-                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1
+                local title="Nvidia Drivers"
+                local msg="$msg036"
+                _msgbox_
+                exit 0 ;;
+            2) if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+                fi
+                if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
+                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+                fi
+                if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
+                    if ! rpm -qi "akmods-keys" &>/dev/null; then
+                        _packages=(rpmdevtools akmods)
+                        _install_
+                        sudo kmodgenca
+                        sudo mokutil --import /etc/pki/akmods/certs/public_key.der
+                        git clone https://github.com/CheariX/silverblue-akmods-keys
+                        cd silverblue-akmods-keys
+                        sudo bash setup.sh
+                        rpm-ostree install -yA akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
+                    fi
                 fi
                 rpm-ostree install xorg-x11-drv-nvidia-470xx akmod-nvidia-470xx xorg-x11-drv-nvidia-470xx-cuda
-                sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1 ;;
-            2 | q) break ;;
+                sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1
+                local title="Nvidia Drivers"
+                local msg="$msg036"
+                _msgbox_
+                exit 0;;
+            3 | q) break ;;
             *) echo "Invalid Option" ;;
             esac
 
@@ -88,9 +175,15 @@ nvidia_in () {
 # install proper codec support
 codecfixes () {
 
-    if whiptail --title "$msg006" --yesno "$msg080" 8 78; then
-        _packages=("libavcodec-freeworld")
-        _install_
+    if [ ! -f /.autopatch.state ]; then
+        if whiptail --title "$msg006" --yesno "$msg080" 8 78; then
+            _packages=("libavcodec-freeworld")
+            _install_
+        fi
+    else
+        local title="AutoPatcher"
+        local msg="$msg234"
+        _msgbox_
     fi
 
 }
@@ -256,7 +349,7 @@ source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/h
 # extras menu
 while :; do
 
-    CHOICE=$(whiptail --title "Extras Supermenu" --menu "LinuxToys ${current_ltver}" 25 78 16 \
+    CHOICE=$(whiptail --title "Extras" --menu "LinuxToys ${current_ltver}" 25 78 16 \
         "0" "$msg044" \
         "1" "$msg048" \
         "2" "$msg248" \
@@ -266,9 +359,10 @@ while :; do
         "6" "$msg265" \
         "7" "$msg260" \
         "8" "$msg264" \
-        "9" "$msg078" \
-        "10" "$msg209" \
-        "11" "$msg059" 3>&1 1>&2 2>&3)
+        "9" "$msg270" \
+        "10" "$msg078" \
+        "11" "$msg209" \
+        "12" "$msg059" 3>&1 1>&2 2>&3)
 
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -286,9 +380,10 @@ while :; do
     6) rpmfusion_in ;;
     7) codecfixes ;;
     8) ostree_autoupd ;;
-    9) nvidia_in ;;
-    10) lsw_in ;;
-    11 | q) break ;;
+    9) akmod_sb ;;
+    10) nvidia_in ;;
+    11) lsw_in ;;
+    12 | q) break ;;
     *) echo "Invalid Option" ;;
     esac
 done

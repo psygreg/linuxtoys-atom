@@ -26,9 +26,27 @@ optimizer () {
         echo "AutomaticUpdatePolicy set to: $AUTOPOLICY"
         sudo systemctl enable rpm-ostreed-automatic.timer --now
         # install rpmfusion if absent
-        local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
-        if [ -n "$rpmfusion_status" ]; then
-            sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+        if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+            sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+        fi
+        if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
+            sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+        fi
+        # install codecs if absent
+        local _packages=("libavcodec-freeworld")
+        _install_
+        # enable signing of kernel modules (akmods) like Nvidia and VirtualBox
+        if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
+            if ! rpm -qi "akmods-keys" &>/dev/null; then
+                local _packages=(rpmdevtools akmods)
+                _install_
+                sudo kmodgenca
+                sudo mokutil --import /etc/pki/akmods/certs/public_key.der
+                git clone https://github.com/CheariX/silverblue-akmods-keys
+                cd silverblue-akmods-keys
+                sudo bash setup.sh
+                rpm-ostree install akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
+            fi
         fi
         # fix alive timeout for Gnome
         if echo "$XDG_CURRENT_DESKTOP" | grep -qi 'gnome'; then
@@ -48,9 +66,16 @@ optimizer () {
 # end messagebox
 end_msg () {
 
-    local title="$msg006"
-    local msg="$msg036"
-    _msgbox_
+    if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
+        local title="$msg006"
+        local msg="$msg268"
+        _msgbox_
+        exit 0
+    else
+        local title="$msg006"
+        local msg="$msg036"
+        _msgbox_
+    fi
 
 }
 
