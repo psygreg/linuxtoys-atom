@@ -219,7 +219,7 @@ lsfg_vk_in () {
         if [ $? -eq 0 ]; then
             # check flatpaks
             if command -v flatpak &> /dev/null; then
-                curl -fsSL https://raw.githubusercontent.com/psygreg/linuxtoys/main/src/linuxtoys.sh | bash
+                curl -fsSL https://raw.githubusercontent.com/psygreg/lsfg-vk-flatpak/main/flatpak-enabler.sh | bash
             fi
             local title="LSFG-VK"
             local msg="$msg249"
