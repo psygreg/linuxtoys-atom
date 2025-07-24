@@ -18,7 +18,7 @@ Your trusty multitool now on Fedora-based immutable operating systems.
 
 ## Contributing
 
-To contribute with translations, you can fork this repo, add a new language file to the `resources/lang` folder and send a Pull Request. I can make the necessary adjustments to the program's code myself to accomodate new languages.
+To contribute with translations, you can fork this repo, add a new language file to the `src/lang` folder and send a Pull Request. I can make the necessary adjustments to the program's code myself to accomodate new languages.
 
 Other contributions can be made by forking, adding your changes and sending a Pull Request as well.
 
