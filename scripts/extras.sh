@@ -341,6 +341,41 @@ rpmfusion_in () {
 
 }
 
+# photogimp - for those who already have GIMP installed
+photogimp_in () {
+
+    if whiptail --title "PhotoGIMP" --yesno "$msg271" 12 78; then
+        if flatpak list --app | grep -q org.gimp.GIMP; then
+            local title="PhotoGIMP"
+            local msg="$msg272"
+            _msgbox_
+            flatpak run org.gimp.GIMP & sleep 1
+            PID=($(pgrep -f "gimp"))
+            if [ -z "$PID" ]; then
+                echo "Failed to find Flatpak process."
+                return 1
+            fi
+            echo "Found Flatpak app running as PID $PID"
+            sleep 20
+            for ID in "${PID[@]}"; do
+                kill "$ID"
+            done
+            wait "$PID" 2>/dev/null
+            git clone https://github.com/Diolinux/PhotoGIMP.git
+            cd PhotoGIMP
+            cp -rf .config/* $HOME/.config/
+            cp -rf .local/* $HOME/.local/
+            cd ..
+            rm -rf PhotoGIMP
+        else
+            local title="PhotoGIMP"
+            local msg="$msg273"
+            _msgbox_
+        fi
+    fi
+
+}
+
 # runtime
 . /etc/os-release
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
@@ -353,16 +388,17 @@ while :; do
         "0" "$msg044" \
         "1" "$msg048" \
         "2" "$msg248" \
-        "3" "$msg258" \
-        "4" "$msg177" \
-        "5" "iNet Wireless Daemon" \
-        "6" "$msg265" \
-        "7" "$msg260" \
-        "8" "$msg264" \
-        "9" "$msg270" \
-        "10" "$msg078" \
-        "11" "$msg209" \
-        "12" "$msg059" 3>&1 1>&2 2>&3)
+        "3" "PhotoGIMP" \
+        "4" "$msg258" \
+        "5" "$msg177" \
+        "6" "iNet Wireless Daemon" \
+        "7" "$msg265" \
+        "8" "$msg260" \
+        "9" "$msg264" \
+        "10" "$msg270" \
+        "11" "$msg078" \
+        "12" "$msg209" \
+        "13" "$msg059" 3>&1 1>&2 2>&3)
 
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -374,16 +410,17 @@ while :; do
     0) ufw_in ;;
     1) lucidglyph_in ;;
     2) lsfg_vk_in ;;
-    3) optimizer_ ;;
-    4) psaver ;;
-    5) iwd_summon ;;
-    6) rpmfusion_in ;;
-    7) codecfixes ;;
-    8) ostree_autoupd ;;
-    9) akmod_sb ;;
-    10) nvidia_in ;;
-    11) lsw_in ;;
-    12 | q) break ;;
+    3) photogimp_in ;;
+    4) optimizer_ ;;
+    5) psaver ;;
+    6) iwd_summon ;;
+    7) rpmfusion_in ;;
+    8) codecfixes ;;
+    9) ostree_autoupd ;;
+    10) akmod_sb ;;
+    11) nvidia_in ;;
+    12) lsw_in ;;
+    13 | q) break ;;
     *) echo "Invalid Option" ;;
     esac
 done

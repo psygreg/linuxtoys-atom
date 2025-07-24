@@ -131,6 +131,32 @@ install_flatpak () {
                 local title="$msg030"
                 local msg="$msg132"
                 _msgbox_
+                return 1
+            fi
+        fi
+        if [[ -n "$_gimp" ]]; then
+            if whiptail --title "PhotoGIMP" --yesno "$msg271" 12 78; then
+                local title="PhotoGIMP"
+                local msg="$msg272"
+                _msgbox_
+                flatpak run org.gimp.GIMP & sleep 1
+                PID=($(pgrep -f "gimp"))
+                if [ -z "$PID" ]; then
+                    echo "Failed to find Flatpak process."
+                    exit 1
+                fi
+                echo "Found Flatpak app running as PID $PID"
+                sleep 20
+                for ID in "${PID[@]}"; do
+                    kill "$ID"
+                done
+                wait "$PID" 2>/dev/null
+                git clone https://github.com/Diolinux/PhotoGIMP.git
+                cd PhotoGIMP
+                cp -rf .config/* $HOME/.config/
+                cp -rf .local/* $HOME/.local/
+                cd ..
+                rm -rf PhotoGIMP
             fi
         fi
     fi
