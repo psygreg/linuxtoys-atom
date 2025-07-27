@@ -113,7 +113,7 @@ install_native () {
     # add proper versions of gamescope and mangohud on flatpak runtimes
     if [[ -n "$_gscope" ]]; then
         if command -v flatpak &> /dev/null; then
-            flatpak install --or-update --system -y org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08
+            flatpak install --or-update --system -y org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08 org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08
         fi
     fi
     if [[ -n "$_mhud" ]]; then
