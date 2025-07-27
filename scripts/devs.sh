@@ -21,12 +21,14 @@ dsupermenu () {
     local httpie_status=$([ "$_httpie" = "io.httpie.Httpie" ] && echo "ON" || echo "OFF")
     local postman_status=$([ "$_postman" = "com.getpostman.Postman" ] && echo "ON" || echo "OFF")
 		local ghcli_status=$([ "$_ghcli" = "gh" ] && echo "ON" || echo "OFF")
+    local code_status=$([ "$_code" = "code" ] && echo "ON" || echo "OFF")
 
     while :; do
 
         local selection
         selection=$(whiptail --title "$msg131" --checklist \
             "$msg131" 20 78 15 \
+            "VS Code" "$msg141" $code_status \
             "Pulsar" "$msg261" $plsr_status \
             "VSCodium" "$msg142" $codium_status \
             "NeoVim" "$msg140" $nvim_status \
@@ -50,6 +52,7 @@ dsupermenu () {
             break
         fi
 
+        [[ "$selection" == *"VS Code"* ]] && _code="code" || _code=""
         [[ "$selection" == *"VSCodium"* ]] && _codium="com.vscodium.codium" || _codium=""
 				[[ "$selection" == *"Pulsar"* ]] && _plsr="pulsar" || _plsr=""
         [[ "$selection" == *"NeoVim"* ]] && _nvim="neovim" || _nvim=""
@@ -96,6 +99,9 @@ install_native () {
     if [[ -n "$_packages" ]]; then
         if [[ -n "$_unity" ]]; then
             sudo sh -c 'echo -e "[unityhub]\nname=Unity Hub\nbaseurl=https://hub.unity3d.com/linux/repos/rpm/stable\nenabled=1\ngpgcheck=1\ngpgkey=https://hub.unity3d.com/linux/repos/rpm/stable/repodata/repomd.xml.key\nrepo_gpgcheck=1" > /etc/yum.repos.d/unityhub.repo'
+        fi
+        if [[ -n "$_code" ]]; then
+            echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
         fi
 				if [[ -n "$_ghcli" ]]; then
 						curl https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee > /etc/yum.repos.d/gh-cli.repo
