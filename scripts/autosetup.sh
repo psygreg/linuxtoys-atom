@@ -6,6 +6,8 @@ optimizer () {
         # filtered cachyos systemd configs
         wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
         rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+        # apply changes by generating initramfs locally
+        rpm-ostree initramfs --enable
         # shader booster
         local script="shader-patcher-atom" && _invoke_
         # automatic updating
