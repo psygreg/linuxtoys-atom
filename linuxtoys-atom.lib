@@ -29,6 +29,12 @@ _log_ () {
 
 }
 
+# error handler
+fatal() {
+    zenity --error --title "Fatal Error" --text "$1"
+    exit 1
+}
+
 # flatpak installation
 _flatpak_ () {
 
@@ -90,7 +96,7 @@ _invoke_ () {
 
 }
 
-# whiptail messagebox
+# whiptail messagebox -- NO LONGER REQUIRED AFTER ZENITY
 _msgbox_ () {
 
     whiptail --title "$title" --msgbox "$msg" 12 78
