@@ -1,7 +1,7 @@
 # LinuxToys Atom
 Your trusty multitool now on Fedora-based and Universal Blue immutable operating systems. For others, see [LinuxToys](https://github.com/psygreg/linuxtoys).
 
-![LinuxToys Atom](https://github.com/psygreg/linuxtoys-atom/blob/63dee086bb3efd0feac35593519af7c7451a78ee/src/screenshot.png)
+![LinuxToys Atom](https://github.com/psygreg/linuxtoys-atom/blob/1c4b467ea304597062e84bf08a13db567ea8d489/src/screenshot2.png)
 
 ## Compabitibilty
 - Fedora ***Silverblue***, ***Kinoite*** and ***CoreOS***
