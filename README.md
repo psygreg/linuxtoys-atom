@@ -15,7 +15,7 @@ Your trusty multitool now on Fedora-based and Universal Blue immutable operating
 - Run it. All dependencies are self-contained within the AppImage.
 
 ### Direct
-- Make sure dependencies are installed: `bash newt curl wget git`
+- Make sure dependencies are installed: `bash curl wget git zenity`
 - Run it with the command `curl -fsSL https://raw.githubusercontent.com/psygreg/linuxtoys-atom/main/linuxtoys.sh | bash`
 
 ## Contributing
