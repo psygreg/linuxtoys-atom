@@ -1,83 +1,94 @@
 #!/bin/bash
-
 # initialize variables for reboot status
 flatpak_run=""
 # supermenu checklist
 usupermenu () {
 
-    local gsr_status=$([ "$_gsr" = "com.dec05eba.gpu_screen_recorder" ] && echo "ON" || echo "OFF")
-    local obs_status=$([ "$_obs" = "com.obsproject.Studio" ] && echo "ON" || echo "OFF")
-    local hndbrk_status=$([ "$_hndbrk" = "fr.handbrake.ghb" ] && echo "ON" || echo "OFF")
-    local slar_status=$([ "$_slar" = "io.github.pwr_solaar.solaar" ] && echo "ON" || echo "OFF")
-    local oprzr_status=$([ "$_oprzr" = "yes" ] && echo "ON" || echo "OFF")
-    local oprgb_status=$([ "$_oprgb" = "org.openrgb.OpenRGB" ] && echo "ON" || echo "OFF")
-    local lact_status=$([ "$_lact" = "io.github.ilya_zlobintsev.LACT" ] && echo "ON" || echo "OFF")
-    local droid_status=$([ "$_droid" = "waydroid" ] && echo "ON" || echo "OFF")
-    local dckr_status=$([ "$_dckr" = "yes" ] && echo "ON" || echo "OFF")
-    local rocm_status=$([ "$_rocm" = "yes" ] && echo "ON" || echo "OFF")
-    local rcl_status=$([ "$_rcl" = "yes" ] && echo "ON" || echo "OFF")
-    local fseal_status=$([ "$_fseal" = "com.github.tchx84.Flatseal" ] && echo "ON" || echo "OFF")
-    local efx_status=$([ "$_efx" = "com.github.wwmm.easyeffects" ] && echo "ON" || echo "OFF")
-    local sc_status=$([ "$_sc" = "com.core447.StreamController" ] && echo "ON" || echo "OFF")
-    local qpw_status=$([ "$_qpw" = "org.rncbc.qpwgraph" ] && echo "ON" || echo "OFF")
-    local wrhs_status=$([ "$_wrhs" = "io.github.flattool.Warehouse" ] && echo "ON" || echo "OFF")
+    local selection_str
+    local selection
+    local selected
+    local search_item
+    local item
+    declare -a search_item=(
+        "GPU Screen Recorder"
+        "OBS Studio"
+        "HandBrake"
+        "Solaar"
+        "OpenRazer"
+        "StreamController"
+        "OpenRGB"
+        "Flatseal"
+        "Warehouse"
+        "Easy Effects"
+        "QPWGraph"
+        "LACT"
+        "Waydroid"
+        "Docker"
+        "Rusticl"
+        "ROCm"
+    )
 
-    while :; do
+    while true; do
+        selection_str=$(zenity --list --checklist --title="Utilities Menu" \
+        	--column="" \
+        	--column="Apps" \
+            FALSE "GPU Screen Recorder" \
+            FALSE "OBS Studio" \
+            FALSE "HandBrake" \
+            FALSE "Solaar" \
+            FALSE "OpenRazer" \
+            FALSE "StreamController" \
+            FALSE "OpenRGB" \
+            FALSE "Flatseal" \
+            FALSE "Warehouse" \
+            FALSE "Easy Effects" \
+            FALSE "QPWGraph" \
+            FALSE "LACT" \
+            FALSE "Waydroid" \
+            FALSE "Docker" \
+            FALSE "Rusticl" \
+            FALSE "ROCm" \
+            --height=720 --width=300 --separator="|")
 
-        local selection
-        selection=$(whiptail --title "$msg131" --checklist \
-            "$msg131" 20 78 15 \
-            "GPU Screen Recorder" "$msg086" $gsr_status \
-            "OBS Studio" "Open Broadcaster Software" $obs_status \
-            "HandBrake" "$msg087" $hndbrk_status \
-            "Solaar" "$msg088" $slar_status \
-            "OpenRazer" "$msg089" $oprzr_status \
-            "StreamController" "$msg151" $sc_status \
-            "OpenRGB" "$msg091" $oprgb_status \
-            "Flatseal" "$msg133" $fseal_status \
-            "Warehouse" "$msg218" $wrhs_status \
-            "Easy Effects" "$msg147" $efx_status \
-            "QPWGraph" "$msg179" $qpw_status \
-            "LACT" "$msg093" $lact_status \
-            "Waydroid" "$msg094" $droid_status \
-            "Docker" "$msg095" $dckr_status \
-            "Rusticl" "$msg158" $rcl_status \
-            "ROCm" "$msg096" $rocm_status \
-            3>&1 1>&2 2>&3)
-
-        exitstatus=$?
-        if [ $exitstatus != 0 ]; then
-        # Exit the script if the user presses Esc
+        if [ $? -ne 0 ]; then
             break
         fi
 
-        [[ "$selection" == *"GPU Screen Recorder"* ]] && _gsr="com.dec05eba.gpu_screen_recorder" || _gsr=""
-        [[ "$selection" == *"OBS Studio"* ]] && _obs="com.obsproject.Studio" || _obs=""
-        [[ "$selection" == *"HandBrake"* ]] && _hndbrk="fr.handbrake.ghb" || _hndbrk=""
-        [[ "$selection" == *"Solaar"* ]] && _slar="io.github.pwr_solaar.solaar" || _slar=""
-        [[ "$selection" == *"OpenRazer"* ]] && _oprzr="yes" || _oprzr=""
-        [[ "$selection" == *"OpenRGB"* ]] && _oprgb="org.openrgb.OpenRGB" || _oprgb=""
-        [[ "$selection" == *"LACT"* ]] && _lact="io.github.ilya_zlobintsev.LACT" || _lact=""
-        [[ "$selection" == *"Waydroid"* ]] && _droid="waydroid" || _droid=""
-        [[ "$selection" == *"Docker"* ]] && _dckr="yes" || _dckr=""
-        [[ "$selection" == *"ROCm"* ]] && _rocm="yes" || _rocm=""
-        [[ "$selection" == *"Rusticl"* ]] && _rcl="yes" || _rcl=""
-        [[ "$selection" == *"Flatseal"* ]] && _fseal="com.github.tchx84.Flatseal" || _fseal=""
-        [[ "$selection" == *"Easy Effects"* ]] && _efx="com.github.wwmm.easyeffects" || _efx=""
-        [[ "$selection" == *"StreamController"* ]] && _sc="com.core447.StreamController" || _sc=""
-        [[ "$selection" == *"QPWGraph"* ]] && _qpw="org.rncbc.qpwgraph" || _qpw=""
-        [[ "$selection" == *"Warehouse"* ]] && _wrhs="io.github.flattool.Warehouse" || _wrhs=""
+        IFS='|' read -ra selection <<< "$selection_str"
+
+        # compare array elements
+        for item in "${search_item[@]}"; do
+            for selected in "${selection[@]}"; do
+                if [[ "$selected" == "$item" ]]; then
+                # if item is found, set the corresponding variable
+                    case $item in
+                        "GPU Screen Recorder") _gsr="com.dec05eba.gpu_screen_recorder" ;;
+                        "OBS Studio") _obs="com.obsproject.Studio" ;;
+                        "HandBrake") _hndbrk="fr.handbrake.ghb" ;;
+                        "Solaar") _slar="io.github.pwr_solaar.solaar" ;;
+                        "OpenRazer") _oprzr="yes" ;;
+                        "StreamController") _sc="com.core447.StreamController" ;;
+                        "OpenRGB") _oprgb="org.openrgb.OpenRGB" ;;
+                        "Flatseal") _fseal="com.github.tchx84.Flatseal" ;;
+                        "Warehouse") _wrhs="io.github.flattool.Warehouse" ;;
+                        "Easy Effects") _efx="com.github.wwmm.easyeffects" ;;
+                        "QPWGraph") _qpw="org.rncbc.qpwgraph" ;;
+                        "LACT") _lact="io.github.ilya_zlobintsev.LACT" ;;
+                        "Waydroid") _droid="waydroid" ;;
+                        "Docker") _dckr="yes" ;;
+                        "Rusticl") _rcl="yes" ;;
+                        "ROCm") _rocm="yes" ;;
+                    esac
+                fi
+            done
+        done
 
         install_flatpak
         install_native
         if [[ -n "$flatpak_run" || -n "$_oprzr" || -n "$_rocm" ]]; then
-            local title="$msg006"
-            local msg="$msg036"
-            _msgbox_
+            zenity --info --title="$msg006" --text="$msg036" --height=300 --width=300
         else
-            local title="$msg006"
-            local msg="$msg018"
-            _msgbox_
+            zenity --info --title="$msg006" --text="$msg018" --height=300 --width=300
         fi
         break
 
@@ -186,7 +197,7 @@ install_flatpak () {
                 obs_pipe
             fi
         else
-            if whiptail --title "$msg006" --yesno "$msg085" 8 78; then
+            if zenity --question --title "$msg006" --text "$msg085" --height=300 --width=300; then
                 flatpak_run="1"
                 flatpak_in_lib
                 _flatpak_
@@ -205,9 +216,7 @@ install_flatpak () {
                     obs_pipe
                 fi
             else
-                local title="$msg030"
-                local msg="$msg132"
-                _msgbox_
+                nonfatal "$msg132"
             fi
         fi
     fi

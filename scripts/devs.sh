@@ -1,89 +1,97 @@
 #!/bin/bash
-# TODO fix crashing
-
 # initialize variables for reboot status
 flatpak_run=""
-# supermenu checklist
-dsupermenu () {
 
-    local codium_status=$([ "$_codium" = "com.vscodium.codium" ] && echo "ON" || echo "OFF")
-		local plsr_status=$([ "$_plsr" = "pulsar" ] && echo "ON" || echo "OFF")
-    local nvim_status=$([ "$_nvim" = "neovim" ] && echo "ON" || echo "OFF")
-    local nvm_status=$([ "$_nvm" = "nodejs" ] && echo "ON" || echo "OFF")
-    local mvn_status=$([ "$_mvn" = "maven" ] && echo "ON" || echo "OFF")
-    local pyenv_status=$([ "$_pyenv" = "pyenv" ] && echo "ON" || echo "OFF")
-    local unity_status=$([ "$_unity" = "unityhub" ] && echo "ON" || echo "OFF")
-    local dotnet_status=$([ "$_dotnet" = "dotnet-sdk-9.0" ] && echo "ON" || echo "OFF")
-    local java_status=$([ "$_java" = "java" ] && echo "ON" || echo "OFF")
-    local droidstd_status=$([ "$_droidstd" = "com.google.AndroidStudio" ] && echo "ON" || echo "OFF")
-    local omb_status=$([ "$_omb" = "1" ] && echo "ON" || echo "OFF")
-    local insomnia_status=$([ "$_insomnia" = "rest.insomnia.Insomnia" ] && echo "ON" || echo "OFF")
-    local httpie_status=$([ "$_httpie" = "io.httpie.Httpie" ] && echo "ON" || echo "OFF")
-    local postman_status=$([ "$_postman" = "com.getpostman.Postman" ] && echo "ON" || echo "OFF")
-		local ghcli_status=$([ "$_ghcli" = "gh" ] && echo "ON" || echo "OFF")
-    local code_status=$([ "$_code" = "code" ] && echo "ON" || echo "OFF")
+# checklist menu
+devmenu () {
 
-    while :; do
+    local selection_str
+    local search_item
+    local selection
+    # set up arrays
+    declare -a search_item=(
+        "VS Code"
+        "VSCodium"
+        "NeoVim"
+        "OhMyBash"
+        "GitHub CLI"
+        "Node Version Manager"
+        "Maven"
+        "Python"
+        "C# .NET SDK"
+        "Java"
+        "Android Studio"
+        "Unity Hub"
+        "Insomnia"
+        "Httpie"
+        "Postman"
+    )
 
-        local selection
-        selection=$(whiptail --title "$msg131" --checklist \
-            "$msg131" 20 78 15 \
-            "VS Code" "$msg141" $code_status \
-            "Pulsar" "$msg261" $plsr_status \
-            "VSCodium" "$msg142" $codium_status \
-            "NeoVim" "$msg140" $nvim_status \
-            "OhMyBash" "$msg226" $omb_status \
-						"GitHub CLI" "$msg262" $ghcli_status \
-            "NodeJS" "+ Node Version Manager" $nvm_status \
-            "Maven" "$msg178" $mvn_status \
-            "Python" "$msg134" $pyenv_status \
-            "C#" "Microsoft .NET SDK" $dotnet_status \
-            "Java" "OpenJDK/JRE" $java_status \
-            "Android Studio" "$msg206" $droidstd_status \
-            "Unity Hub" "$msg137" $unity_status \
-            "Insomnia" "$msg245" $insomnia_status \
-            "Httpie" "$msg246" $httpie_status \
-            "Postman" "$msg247" $postman_status \
-            3>&1 1>&2 2>&3)
+    # checklist
+    while true; do
+   	    selection_str=$(zenity --list --checklist --title="Developer Menu" \
+        	--column="" \
+        	--column="Apps" \
+        	FALSE "VS Code" \
+        	FALSE "VSCodium" \
+        	FALSE "NeoVim" \
+        	FALSE "OhMyBash" \
+        	FALSE "GitHub CLI" \
+            FALSE "Node Version Manager" \
+        	FALSE "Maven" \
+        	FALSE "Python" \
+        	FALSE "C# .NET SDK" \
+        	FALSE "Java" \
+        	FALSE "Android Studio" \
+        	FALSE "Unity Hub" \
+        	FALSE "Insomnia" \
+        	FALSE "Httpie" \
+        	FALSE "Postman" \
+        	--height=690 --width=300 --separator="|")
 
-        exitstatus=$?
-        if [ $exitstatus != 0 ]; then
-        # Exit the script if the user presses Esc
-            break
-        fi
+	    if [ $? -ne 0 ]; then
+        	break
+   	    fi
 
-        [[ "$selection" == *"VS Code"* ]] && _code="code" || _code=""
-        [[ "$selection" == *"VSCodium"* ]] && _codium="com.vscodium.codium" || _codium=""
-				[[ "$selection" == *"Pulsar"* ]] && _plsr="pulsar" || _plsr=""
-        [[ "$selection" == *"NeoVim"* ]] && _nvim="neovim" || _nvim=""
-        [[ "$selection" == *"NodeJS"* ]] && _nvm="nodejs" || _nvm=""
-        [[ "$selection" == *"Maven"* ]] && _mvn="maven" || _mvn=""
-        [[ "$selection" == *"Python"* ]] && _pyenv="pyenv" || _pyenv=""
-        [[ "$selection" == *"Unity Hub"* ]] && _unity="unityhub" || _unity=""
-        [[ "$selection" == *"C#"* ]] && _dotnet="dotnet-sdk-9.0" || _dotnet=""
-        [[ "$selection" == *"Java"* ]] && _java="java" || _java=""
-        [[ "$selection" == *"Android Studio"* ]] && _droidstd="droidstd" || _droidstd=""
-        [[ "$selection" == *"OhMyBash"* ]] && _omb="1" || _omb=""
-        [[ "$selection" == *"Insomnia"* ]] && _insomnia="rest.insomnia.Insomnia" || _insomnia=""
-        [[ "$selection" == *"Httpie"* ]] && _httpie="io.httpie.Httpie" || _httpie=""
-        [[ "$selection" == *"Postman"* ]] && _postman="com.getpostman.Postman" || _postman=""
-				[[ "$selection" == *"GitHub CLI"* ]] && _ghcli="gh" || _ghcli=""
+        IFS='|' read -ra selection <<< "$selection_str"
 
+        # compare array elements
+        for item in "${search_item[@]}"; do
+            for selected in "${selection[@]}"; do
+                if [[ "$selected" == "$item" ]]; then
+                # if item is found, set the corresponding variable
+                    case $item in
+                        "VS Code") _code="code" ;;
+                        "VSCodium") _codium="com.vscodium.codium" ;;
+                        "NeoVim") _nvim="neovim" ;;
+                        "OhMyBash") _omb="1" ;;
+                        "GitHub CLI") _ghcli="gh" ;;
+                        "Node Version Manager") _nvm="nodejs" ;;
+                        "Maven") _mvn="maven" ;;
+                        "Python") _pyenv="pyenv" ;;
+                        "C# .NET SDK") _dotnet="dotnet-sdk-9.0" ;;
+                        "Java") _java="java" ;;
+                        "Android Studio") _droidstd="com.google.AndroidStudio" ;;
+                        "Unity Hub") _unity="unityhub" ;;
+                        "Insomnia") _insomnia="rest.insomnia.Insomnia" ;;
+                        "Httpie") _httpie="io.httpie.Httpie" ;;
+                        "Postman") _postman="com.getpostman.Postman" ;;
+                    esac
+                fi
+            done
+        done
+
+        # execute selected operations
         install_flatpak
         install_native
         others_t
-        # adjust if rebooting is required for any software
-        if [[ -n "$flatpak_run" || -n "$_pyenv" || -n "$_nvm" ]]; then
-            local title="$msg006"
-            local msg="$msg036"
-            _msgbox_
+        if [ -n "$flatpak_run" ]; then
+            zenity --info --title "$msg006" --text "$msg036" --height=300 --width=300
         else
-            local title="$msg006"
-            local msg="$msg018"
-            _msgbox_
+            zenity --info --title "$msg006" --text "$msg018" --height=300 --width=300
         fi
         break
-
+        
     done
 
 }
@@ -92,10 +100,10 @@ dsupermenu () {
 # native packages
 install_native () {
 
-		local _packages=($_nvim $_plsr $_nvm $_mvn $_unity $_dotnet $_ghcli)
-		if [[ -n "$_pyenv" ]]; then
-				_packages+=("make gcc patch zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel libuuid-devel gdbm-libs libnsl2")
-		fi
+	local _packages=($_nvim $_plsr $_nvm $_mvn $_unity $_dotnet $_ghcli)
+	if [[ -n "$_pyenv" ]]; then
+		_packages+=("make gcc patch zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel libuuid-devel gdbm-libs libnsl2")
+	fi
     if [[ -n "$_packages" ]]; then
         if [[ -n "$_unity" ]]; then
             sudo sh -c 'echo -e "[unityhub]\nname=Unity Hub\nbaseurl=https://hub.unity3d.com/linux/repos/rpm/stable\nenabled=1\ngpgcheck=1\ngpgkey=https://hub.unity3d.com/linux/repos/rpm/stable/repodata/repomd.xml.key\nrepo_gpgcheck=1" > /etc/yum.repos.d/unityhub.repo'
@@ -103,9 +111,9 @@ install_native () {
         if [[ -n "$_code" ]]; then
             echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null
         fi
-				if [[ -n "$_ghcli" ]]; then
-						curl https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee > /etc/yum.repos.d/gh-cli.repo
-				fi
+		if [[ -n "$_ghcli" ]]; then
+			curl https://cli.github.com/packages/rpm/gh-cli.repo | sudo tee > /etc/yum.repos.d/gh-cli.repo
+		fi
         _install_
     fi
 
@@ -115,7 +123,7 @@ install_native () {
 install_flatpak () {
 
     local _flatpaks=($_codium $_insomnia $_httpie $_postman $_droidstd)
-    if [[ -n "$_flatpaks" ]] || [[ -n "$_steam" ]]; then
+    if [[ -n "$_flatpaks" ]]; then
         if command -v flatpak &> /dev/null; then
             flatpak_in_lib
             _flatpak_
@@ -125,9 +133,7 @@ install_flatpak () {
                 flatpak_in_lib
                 _flatpak_
             else
-                local title="$msg030"
-                local msg="$msg132"
-                _msgbox_
+                zenity --error --title "$msg030" --text "$msg132" --height=300 --width=300
             fi
         fi
     fi
@@ -137,50 +143,66 @@ install_flatpak () {
 # java JDK + JRE installation
 jdk_install () {
 
-		local _packages=()
+	local _packages=()
     local javas=($_jdk8 $_jdk11 $_jdk17 $_jdk21 $_jdk24)
     for jav in "${javas[@]}"; do
         if [ $jav == "8" ]; then
-						_packages+=("java-1.8.0-openjdk java-1.8.0-openjdk-devel")
+			_packages+=("java-1.8.0-openjdk java-1.8.0-openjdk-devel")
             continue
+        else
+		    _packages+=("java-${jav}-openjdk java-${jav}-openjdk-devel")
         fi
-				_packages+=("java-${jav}-openjdk java-${jav}-openjdk-devel")
     done
-		_install_
+	_install_
 
 }
 
 java_in () {
 
-    local jdk8_status=$([ "$_jdk8" = "8" ] && echo "ON" || echo "OFF")
-    local jdk11_status=$([ "$_jdk11" = "11" ] && echo "ON" || echo "OFF")
-    local jdk17_status=$([ "$_jdk17" = "17" ] && echo "ON" || echo "OFF")
-    local jdk21_status=$([ "$_jdk21" = "21" ] && echo "ON" || echo "OFF")
-    local jdk24_status=$([ "$_jdk24" = "24" ] && echo "ON" || echo "OFF")
+    local search_java
+    local jav
+    local chosen_javas
+    local chosen_jav
+    local javas
+    declare -a search_java=(
+        "Java 8 LTS"
+        "Java 11 LTS"
+        "Java 17 LTS"
+        "Java 21 LTS"
+        "Java 24 Latest"
+    )
 
-    while :; do
+    while true; do
 
-        local selection
-        selection=$(whiptail --title "$msg131" --checklist \
-            "$msg131" 20 78 15 \
-            "Java 8" "LTS" $jdk8_status \
-            "Java 11" "LTS" $jdk11_status \
-            "Java 17" "LTS" $jdk17_status \
-            "Java 21" "LTS" $jdk21_status \
-            "Java 24" "Latest" $jdk24_status \
-            3>&1 1>&2 2>&3)
+        chosen_javas=$(zenity --list --checklist --title="Java JDK" \
+        	--column="" \
+        	--column="$msg277" \
+            FALSE "Java 8 LTS" \
+            FALSE "Java 11 LTS" \
+            FALSE "Java 17 LTS" \
+            FALSE "Java 21 LTS" \
+            FALSE "Java 24 Latest" \
+            --height=410 --width=300 --separator="|")
 
-        exitstatus=$?
-        if [ $exitstatus != 0 ]; then
-        # Exit the script if the user presses Esc
-            return
+        if [ $? -ne 0 ]; then
+            break
         fi
 
-        [[ "$selection" == *"Java 8"* ]] && _jdk8="8" || _jdk8=""
-        [[ "$selection" == *"Java 11"* ]] && _jdk11="11" || _jdk11=""
-        [[ "$selection" == *"Java 17"* ]] && _jdk17="17" || _jdk17=""
-        [[ "$selection" == *"Java 21"* ]] && _jdk21="21" || _jdk21=""
-        [[ "$selection" == *"Java 24"* ]] && _jdk24="24" || _jdk24=""
+        IFS='|' read -ra javas <<< "$chosen_javas"
+
+        for jav in "${search_java[@]}"; do
+            for chosen_jav in "${javas[@]}"; do
+                if [[ "$chosen_jav" == "$jav" ]]; then
+                    case $jav in
+                        "Java 8 LTS") _jdk8="8" ;;
+                        "Java 11 LTS") _jdk11="11" ;;
+                        "Java 17 LTS") _jdk17="17" ;;
+                        "Java 21 LTS") _jdk21="21" ;;
+                        "Java 24 Latest") _jdk24="24" ;;
+                    esac
+                fi
+            done
+        done
 
         jdk_install
 
@@ -192,15 +214,13 @@ java_in () {
 others_t () {
 
     if [[ -n "$_nvm" ]]; then
-				_packages=(npm)
-				_install_
+		_packages=(npm)
+		_install_
         wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
         rm install.sh
         npm i --global yarn
         # basic usage instruction prompt
-        local title="$msg006"
-        local msg="$msg136"
-        _msgbox_
+        zenity --info --title "$msg006" --text "$msg136" --height=300 --width=300
         xdg-open https://github.com/nvm-sh/nvm?tab=readme-ov-file#usage
     fi
     if [[ -n "$_pyenv" ]]; then
@@ -223,9 +243,7 @@ others_t () {
         git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
         echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
         # basic usage instruction prompt
-        local title="$msg006"
-        local msg="$msg135"
-        _msgbox_
+        zenity --info --title "$msg006" --text "$msg135" --height=300 --width=300
         xdg-open https://github.com/pyenv/pyenv?tab=readme-ov-file#usage
         xdg-open https://github.com/pyenv/pyenv-virtualenv?tab=readme-ov-file#usage
     fi
@@ -242,4 +260,4 @@ others_t () {
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
 _lang_
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/lang/${langfile})
-dsupermenu
+devmenu

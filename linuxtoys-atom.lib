@@ -1,27 +1,6 @@
 ## turbobash library
 . /etc/os-release
 
-# whiptail color palette
-export NEWT_COLORS='
-    root=white,black
-    border=black,lightgray
-    window=black,lightgray
-    shadow=black,gray
-    title=black,lightgray
-    button=black,red
-    actbutton=white,red
-    checkbox=black,lightgray
-    actcheckbox=black,red
-    entry=black,lightgray
-    label=black,lightgray
-    listbox=black,lightgray
-    actlistbox=black,red
-    textbox=black,lightgray
-    acttextbox=black,red
-    helpline=white,red
-    roottext=black,lightgray
-'
-
 # logger -- define variable 'logfile' as the full path to log file
 _log_ () {
 
@@ -29,10 +8,14 @@ _log_ () {
 
 }
 
-# error handler
+# error handlers
 fatal() {
     zenity --error --title "Fatal Error" --text "$1"
     exit 1
+}
+nonfatal() {
+    zenity --error --title "Error" --text "$1"
+    return 1
 }
 
 # flatpak installation
@@ -93,13 +76,6 @@ _invoke_ () {
     if [[ -n "$script" ]]; then
         bash <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/scripts/${script}.sh)
     fi
-
-}
-
-# whiptail messagebox -- NO LONGER REQUIRED AFTER ZENITY
-_msgbox_ () {
-
-    whiptail --title "$title" --msgbox "$msg" 12 78
 
 }
 

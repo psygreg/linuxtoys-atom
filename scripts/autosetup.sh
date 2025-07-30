@@ -58,9 +58,7 @@ optimizer () {
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
     else
-        local title="AutoPatcher"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -69,42 +67,39 @@ optimizer () {
 end_msg () {
 
     if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
-        local title="$msg006"
-        local msg="$msg268"
-        _msgbox_
+        zenity --info --title "$msg006" --text "$msg268" --height=300 --width=300
         exit 0
     else
-        local title="$msg006"
-        local msg="$msg036"
-        _msgbox_
+        zenity --info --title "$msg006" --text "$msg036" --height=300 --width=300
     fi
 
 }
 
 # runtime
 . /etc/os-release
-source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/linuxtoys.lib)
+source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
 # language
 _lang_
-source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/lang/${langfile})
+source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/lang/${langfile})
 # menu
-while :; do
+while true; do
 
-    CHOICE=$(whiptail --title "Power Optimizer" --menu "$msg229" 25 78 16 \
-        "0" "Desktop" \
-        "1" "Laptop" \
-        "2" "Cancel" 3>&1 1>&2 2>&3)
+    CHOICE=$(zenity --list --title="Power Optimizer" \
+        --column="$msg229" \
+        "Desktop" \
+        "Laptop" \
+        "$msg070" \
+        --height=300 --width=300)
 
-    exitstatus=$?
-    if [ $exitstatus != 0 ]; then
-        # Exit the script if the user presses Esc
+    if [ $? -ne 0 ]; then
         break
-    fi
+   	fi
 
     case $CHOICE in
-    0) optimizer && end_msg && break ;;
-    1) optimizer && psave_lib && end_msg && break ;;
-    2 | q) break ;;
+    "Desktop") optimizer && end_msg && break ;;
+    "Laptop") optimizer && psave_lib && end_msg && break ;;
+    "$msg070") break ;;
     *) echo "Invalid Option" ;;
     esac
+    
 done

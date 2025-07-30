@@ -16,22 +16,21 @@ davinciboxdeps () {
         _packages+=("nvidia-container-toolkit-${NVIDIA_CONTAINER_TOOLKIT_VERSION} nvidia-container-toolkit-base-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container-tools-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container1-${NVIDIA_CONTAINER_TOOLKIT_VERSION}")
     elif [[ -n "$amdGPU" ]]; then
         # select ROCm or Rusticl
-        while :; do
-            CHOICE=$(whiptail --title "AMD Drivers" --menu "$msg254" 25 78 16 \
-            "ROCm" "$msg255" \
-            "RustiCL" "$msg256" \
-            3>&1 1>&2 2>&3)
+        while true; do
+            CHOICE=$(zenity --list --title="AMD Drivers" \
+        		--column="$msg254" \
+            	"ROCm - ${msg255}" \
+            	"RustiCL - ${msg256}" \
+            	--height=300 --width=360)
 
-            exitstatus=$?
-            if [ $exitstatus != 0 ]; then
-                # Exit the script if the user presses Esc
-                return 1
-            fi
+            if [ $? -ne 0 ]; then
+        		break
+   			fi
 
             case $CHOICE in
-            ROCm) _packages+=("rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo") ;;
-            RustiCL) _packages+=("mesa-libOpenCL clinfo") ;;
-            *) echo "Invalid Option" ;;
+            	"ROCm - ${msg255}") _packages+=("rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo") ;;
+            	"RustiCL - ${msg256}") _packages+=("mesa-libOpenCL clinfo") ;;
+            	*) echo "Invalid Option" ;;
             esac
         done
     elif [[ -n "$intelGPU" ]]; then
@@ -59,7 +58,7 @@ getresolve () {
   	local major_version="20.0"
   	local minor_version="1"
   	pkgver="${major_version}.${minor_version}"
-	  runver="20.0.1"
+	runver="20.0.1"
   	local _product=""
   	local _referid=""
   	local _siteurl=""
@@ -136,7 +135,7 @@ inresolve () {
     unzip ${_archive_name}.zip
     chmod +x setup.sh
     ./setup.sh ${_archive_run_name}.run
-    whiptail --title "AutoDaVinciBox" --msgbox "Installation succesful." 8 78
+	zenity --info --title "AutoDaVinciBox" --text "Installation succesful." --height=300 --width=300
     cd ..
     rm -rf davincibox
 
@@ -144,27 +143,29 @@ inresolve () {
 
 # runtime start
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
+_lang_
+source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/lang/${langfile})
 # menu
-while :; do
-	CHOICE=$(whiptail --title "AutoDaVinciBox" --menu "Which version do you want to install?" 25 78 16 \
-	"0" "Free" \
-	"1" "Studio" \
-	"2" "Cancel" 3>&1 1>&2 2>&3)
+while true; do
+	CHOICE=$(zenity --list --title="AutoDaVinciBox" \
+        --column="Which version do you want to install?" \
+		"Free" \
+		"Studio" \
+		"$msg070" \
+		--height=300 --width=300)
 
-	exitstatus=$?
-	if [ $exitstatus != 0 ]; then
-    	# Exit the script if the user presses Esc
-    	break
-	fi
+	if [ $? -ne 0 ]; then
+        break
+   	fi
 
 	case $CHOICE in
-	0) 	_upkgname='davinci-resolve'
-    inresolve
-		exit 0 ;;
-	1) 	_upkgname='davinci-resolve-studio'
-	  inresolve
-    exit 0 ;;
-	2 | q) break ;;
-	*) echo "Invalid Option" ;;
+		"Free") _upkgname='davinci-resolve'
+    		inresolve
+			break ;;
+		"Studio") _upkgname='davinci-resolve-studio'
+	  		inresolve
+    		break ;;
+		"$msg070") break ;;
+		*) echo "Invalid Option" ;;
 	esac
 done

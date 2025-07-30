@@ -3,12 +3,10 @@
 # set up firewall (firewall-config)
 ufw_in () {
 
-    if whiptail --title "$msg006" --yesno "$msg007" 8 78; then
+    if zenity --question --title "$msg006" --text "$msg007" --height=300 --width=300; then
         local _packages=(firewall-config)
         _install_
-        local title="$msg006"
-        local msg="$msg008"
-        _msgbox_
+        zenity --info --title "$msg006" --text "$msg008" --height=300 --width=300
     fi
 
 }
@@ -18,7 +16,7 @@ lucidglyph_in () {
 
     local tag=$(curl -s "https://api.github.com/repos/maximilionus/lucidglyph/releases/latest" | grep -oP '"tag_name": "\K(.*)(?=")')
     local ver="${tag#v}"
-    if whiptail --title "$msg019" --yesno "$msg020" 8 78; then
+    if zenity --question --title "$msg019" --text "$msg020" --height=300 --width=300; then
         cd $HOME
         [ -f "${tag}.tar.gz" ] && rm -f "${tag}.tar.gz"
         wget -O "${tag}.tar.gz" "https://github.com/maximilionus/lucidglyph/archive/refs/tags/${tag}.tar.gz"
@@ -29,9 +27,7 @@ lucidglyph_in () {
         cd ..
         sleep 1
         rm -rf lucidglyph-${ver}
-        local title="$msg021"
-        local msg="$msg022"
-        _msgbox_
+        zenity --info --title "$msg021" --text "$msg022" --height=300 --width=300
     fi
 
 }
@@ -40,7 +36,7 @@ lucidglyph_in () {
 akmod_sb () {
 
     if ! rpm -qi "akmods-keys" &>/dev/null; then
-        if whiptail --title "$msg006" --yesno "$msg267" 12 78; then
+        if zenity --question --title "$msg006" --text "$msg267" --height=300 --width=300; then
             _packages=(rpmdevtools akmods)
             _install_
             sudo kmodgenca
@@ -49,15 +45,11 @@ akmod_sb () {
             cd silverblue-akmods-keys
             sudo bash setup.sh
             rpm-ostree install akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
-            local title="$msg006"
-            local msg="$msg268"
-            _msgbox_
+            zenity --info --title "$msg006" --text "$msg268" --height=300 --width=300
             exit 0
         fi
     else
-        local title="$msg030"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -65,27 +57,24 @@ akmod_sb () {
 # Nvidia driver installer for Fedora/SUSE/Debian - it is a montrosity, but it works, trust me bro
 nvidia_in () {
 
-    local title="$msg006"
-    local msg="$msg259"
-    _msgbox_
     local GPU=$(lspci | grep -iE 'vga|3d' | grep -i nvidia)
     if [[ -n "$GPU" ]]; then
-        while :; do
+        while true; do
 
-            CHOICE=$(whiptail --title "$msg006" --menu "$msg067" 25 78 16 \
-            "0" "$msg269"
-            "1" "$msg068" \
-            "2" "$msg069" \
-            "3" "$msg070" 3>&1 1>&2 2>&3)
+            CHOICE=$(zenity --list --title="Nvidia Drivers" \
+                --column="$msg067" \
+                "$msg269" \
+                "$msg068" \
+                "$msg069" \
+                "$msg070" \
+                --width=320 --height=360)
 
-            exitstatus=$?
-            if [ $exitstatus != 0 ]; then
-                # Exit the script if the user presses Esc
-                return
+            if [ $? -ne 0 ]; then
+                break
             fi
 
             case $CHOICE in
-            0) if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+            "$msg269") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
                     sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
                 fi
                 if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
@@ -110,7 +99,7 @@ nvidia_in () {
                 local msg="$msg036"
                 _msgbox_
                 exit 0 ;;
-            1) if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+            "$msg068") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
                     sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
                 fi
                 if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
@@ -134,7 +123,7 @@ nvidia_in () {
                 local msg="$msg036"
                 _msgbox_
                 exit 0 ;;
-            2) if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+            "$msg069") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
                     sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
                 fi
                 if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
@@ -158,16 +147,14 @@ nvidia_in () {
                 local msg="$msg036"
                 _msgbox_
                 exit 0;;
-            3 | q) break ;;
+            "$msg070") break ;;
             *) echo "Invalid Option" ;;
             esac
 
         done
 
     else
-        local title="$msg039"
-        local msg="$msg077"
-        _msgbox_
+        nonfatal "$msg077"
     fi
 
 }
@@ -176,14 +163,12 @@ nvidia_in () {
 codecfixes () {
 
     if [ ! -f /.autopatch.state ]; then
-        if whiptail --title "$msg006" --yesno "$msg080" 8 78; then
+        if zenity --question --title "$msg006" --text "$msg080" --height=300 --width=300; then
             _packages=("libavcodec-freeworld")
             _install_
         fi
     else
-        local title="AutoPatcher"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -192,13 +177,11 @@ codecfixes () {
 psaver () {
 
     if [ ! -f /.autopatch.state ]; then
-        if whiptail --title "$msg006" --yesno "$msg176" 12 78; then
+        if zenity --question --title "$msg006" --text "$msg176" --height=300 --width=300; then
             psave_lib
         fi
     else
-        local title="AutoPatcher"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -207,7 +190,7 @@ psaver () {
 ostree_autoupd () {
 
     if [ ! -f /.autopatch.state ]; then
-        if whiptail --title "OSTree Auto-Update" --yesno "$msg263" 12 78; then
+        if zenity --question --title "OSTree Auto-Update" --text "$msg263" --height=300 --width=300; then
             AUTOPOLICY="stage"
             # backup original config
             sudo cp /etc/rpm-ostreed.conf /etc/rpm-ostreed.conf.bak
@@ -231,9 +214,7 @@ ostree_autoupd () {
             sudo systemctl enable rpm-ostreed-automatic.timer --now
         fi
     else
-        local title="AutoPatcher"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -242,17 +223,14 @@ ostree_autoupd () {
 optimizer_ () {
 
     if [ ! -f /.autopatch.state ]; then
-        if whiptail --title "$msg006" --yesno "$msg257" 8 78; then
+        if zenity --question --title "$msg006" --text "$msg257" --height=300 --width=300; then
             wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
             rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
-            local title="$msg006"
-            local msg="$msg036"
-            _msgbox_
+            rm linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+            zenity --info --title "$msg006" --text "$msg036" --height=300 --width=300
         fi
     else
-        local title="AutoPatcher"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -260,10 +238,8 @@ optimizer_ () {
 # inet wireless daemon installer
 iwd_summon () {
 
-    if whiptail --title "iNet Wireless Daemon" --yesno "$msg244" 12 78; then
-        local title="iNet Wireless Daemon"
-        local msg="$msg243"
-        _msgbox_
+    if zenity --question --title "iNet Wireless Daemon" --text "$msg244" --height=300 --width=300; then
+        zenity --warning --title "iNet Wireless Daemon" --text "$msg243" --height=300 --width=300
         local script="iwdwifi" && _invoke_
     fi
 
@@ -282,8 +258,14 @@ lsw_in () {
         echo "$msg215"
         echo "$msg216"
     } > txtbox
-    whiptail --textbox txtbox 12 80
-    if whiptail --title "LSW" --yesno "$msg217" 12 78; then
+
+    zenity --text-info \
+       --title="LSW" \
+       --filename=txtbox \
+       --checkbox="$msg276" \
+       --width=400 --height=360
+    
+    if zenity --question --title "LSW" --text "$msg217" --height=300 --width=300; then
         cd $HOME
         bash <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/lsw-in-atom.sh)
         sleep 1
@@ -292,7 +274,7 @@ lsw_in () {
 
 }
 
-# install lsfg-vk
+# install lsfg-vk -- TODO REWORK after 1.0 release
 
 lsfg_vk_in () {
 
@@ -327,16 +309,14 @@ lsfg_vk_in () {
 rpmfusion_in () {
 
     if [ ! -f /.autopatch.state ]; then
-        if whiptail --title "RPMFusion" --yesno "$msg266" 12 78; then
+        if zenity --question --title "RPMFusion" --text "$msg266" --height=300 --width=300; then
             local rpmfusion_status="$(rpm-ostree status | grep rpmfusion)"
             if [ -n "$rpmfusion_status" ]; then
                 sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
             fi
         fi
     else
-        local title="AutoPatcher"
-        local msg="$msg234"
-        _msgbox_
+        nonfatal "$msg234"
     fi
 
 }
@@ -344,11 +324,9 @@ rpmfusion_in () {
 # photogimp - for those who already have GIMP installed
 photogimp_in () {
 
-    if whiptail --title "PhotoGIMP" --yesno "$msg271" 12 78; then
+    if zenity --question --title "PhotoGIMP" --text "$msg271" --height=300 --width=300; then
         if flatpak list --app | grep -q org.gimp.GIMP; then
-            local title="PhotoGIMP"
-            local msg="$msg272"
-            _msgbox_
+            zenity --info --title "PhotoGIMP" --text "$msg272" --height=300 --width=300
             flatpak run org.gimp.GIMP & sleep 1
             PID=($(pgrep -f "gimp"))
             if [ -z "$PID" ]; then
@@ -368,9 +346,7 @@ photogimp_in () {
             cd ..
             rm -rf PhotoGIMP
         else
-            local title="PhotoGIMP"
-            local msg="$msg273"
-            _msgbox_
+            nonfatal "$msg273"
         fi
     fi
 
@@ -384,43 +360,43 @@ source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/h
 # extras menu
 while :; do
 
-    CHOICE=$(whiptail --title "Extras" --menu "LinuxToys ${current_ltver}" 25 78 16 \
-        "0" "$msg044" \
-        "1" "$msg048" \
-        "2" "$msg248" \
-        "3" "PhotoGIMP" \
-        "4" "$msg258" \
-        "5" "$msg177" \
-        "6" "iNet Wireless Daemon" \
-        "7" "$msg265" \
-        "8" "$msg260" \
-        "9" "$msg264" \
-        "10" "$msg270" \
-        "11" "$msg078" \
-        "12" "$msg209" \
-        "13" "$msg059" 3>&1 1>&2 2>&3)
+    CHOICE=$(zenity --list --title="Extras" \
+        --column="" \
+        "$msg044" \
+        "$msg048" \
+        "$msg248" \
+        "PhotoGIMP" \
+        "$msg258" \
+        "$msg177" \
+        "iNet Wireless Daemon" \
+        "$msg265" \
+        "$msg260" \
+        "$msg264" \
+        "$msg270" \
+        "$msg078" \
+        "$msg209" \
+        "$msg059" \
+        --width=500 --height=570)
 
-    exitstatus=$?
-    if [ $exitstatus != 0 ]; then
-        # Exit the script if the user presses Esc
+    if [ $? -ne 0 ]; then
         break
     fi
 
     case $CHOICE in
-    0) ufw_in ;;
-    1) lucidglyph_in ;;
-    2) lsfg_vk_in ;;
-    3) photogimp_in ;;
-    4) optimizer_ ;;
-    5) psaver ;;
-    6) iwd_summon ;;
-    7) rpmfusion_in ;;
-    8) codecfixes ;;
-    9) ostree_autoupd ;;
-    10) akmod_sb ;;
-    11) nvidia_in ;;
-    12) lsw_in ;;
-    13 | q) break ;;
-    *) echo "Invalid Option" ;;
+        "$msg044") ufw_in ;;
+        "$msg048") lucidglyph_in ;;
+        "$msg248") lsfg_vk_in ;;
+        "PhotoGIMP") photogimp_in ;;
+        "$msg258") optimizer_ ;;
+        "$msg177") psaver ;;
+        "iNet Wireless Daemon") iwd_summon ;;
+        "$msg265") rpmfusion_in ;;
+        "$msg260") codecfixes ;;
+        "$msg264") ostree_autoupd ;;
+        "$msg270") akmod_sb ;;
+        "$msg078") nvidia_in ;;
+        "$msg209") lsw_in ;;
+        "$msg059") break ;;
+        *) echo "Invalid Option" ;;
     esac
 done

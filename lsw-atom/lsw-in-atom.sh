@@ -8,8 +8,8 @@ docker_install () {
 		local _packages=(docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin)
 		_install_
 		sudo usermod -aG docker $USER
-		sudo systemctl enable --now docker || echo "Error: failed to start docker service" && exit 1
-		sudo systemctl enable --now docker.socket || echo "Error: failed to start docker socket" && exit 2
+		sudo systemctl enable --now docker || nonfatal "Error: failed to start docker service" && exit 1
+		sudo systemctl enable --now docker.socket || nonfatal "Error: failed to start docker socket" && exit 2
 
 }
 
@@ -31,45 +31,37 @@ win_install () {
     # get cpu threads
     _wincpu="$_ccpu"
     # get C size
-    _csize=$(whiptail --inputbox "Enter Windows disk (C:) size in GB. Leave empty to use 50GB." 10 30 3>&1 1>&2 2>&3)
+    _csize=$(zenity --entry --title="LSW" --text="Enter Windows disk (C:) size in GB. Leave empty to use 50GB."  --entry-text "50" --height=300 --width=300)
     local available_gb=$(df -BG "/" | awk 'NR==2 { gsub("G","",$4); print $4 }')
     if [ -z "$_csize" ]; then
         _winsize="50"
     else
         # stop if input size is not a number
-				if [[ -n "$_csize" && ! "$_csize" =~ ^[0-9]+$ ]]; then
-            local title="Error"
-            local msg="Invalid number for disk size."
-            _msgbox_
+		if [[ -n "$_csize" && ! "$_csize" =~ ^[0-9]+$ ]]; then
+			nonfatal "Invalid input for disk size. Please enter a number."
             return 10
         fi
         _winsize="$_csize"
     fi
     if (( _winsize < 40 )); then
-        local title="Error"
-        local msg="Not enough space to install Windows, minimum 40GB."
-        _msgbox_
+		nonfatal "Minimum space to install Windows (C:) is 40GB."
         return 11
     fi
-    if (( available_gb < _winsize )); then
-        local title="Error"
-        local msg="Not enough disk space: ${_winsize} GB required, ${available_gb} GB available."
-        _msgbox_
+    if (( available_gb < _winsize )); then\
+		nonfatal "Not enough disk space: ${_winsize} GB required, ${available_gb} GB available."
         exit 3
     fi
     sed -i "s|^\(\s*RAM_SIZE:\s*\).*|\1\"${_winram}G\"|" compose.yaml
     sed -i "s|^\(\s*CPU_CORES:\s*\).*|\1\"${_wincpu}\"|" compose.yaml
     sed -i "s|^\(\s*DISK_SIZE:\s*\).*|\1\"${_winsize}\"|" compose.yaml
-		if command -v konsole &> /dev/null; then
+	if command -v konsole &> /dev/null; then
         setsid konsole --noclose -e  "sudo docker compose --file ./compose.yaml up" >/dev/null 2>&1 < /dev/null &
-		elif command -v ptyxis &> /dev/null; then
-				setsid ptyxis bash -c "sudo docker compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
+	elif command -v ptyxis &> /dev/null; then
+		setsid ptyxis bash -c "sudo docker compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
     elif command -v gnome-terminal &> /dev/null; then
         setsid gnome-terminal -- bash -c "sudo docker compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
     else
-        local title="Error"
-        local msg="No compatible terminal emulator found to launch Docker Compose."
-        _msgbox_
+		nonfatal "No compatible terminal emulator found to launch Docker Compose."
         exit 4
     fi
 
@@ -78,16 +70,16 @@ win_install () {
 # lsw shortcuts installation
 lsw_install () {
 
-		if whiptail --title "Setup" --yesno "Is the Windows installation finished?" 8 78; then
-				wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/rpmbuild/RPMS/x86_64/lsw-atom-shortcuts-1.0-1.x86_64.rpm
-				rpm-ostree install -yA lsw-atom-shortcuts-1.0-1.x86_64.rpm
-				exit 0
-		else
-				if whiptail --title "Setup" --yesno "Do you want to revert all changes? WARNING: This will ERASE all Docker Compose data!" 8 78; then
-          	sudo docker compose down --rmi=all --volumes
-            exit 7
-        fi
+	if zenity --question --title "Setup" --text "Is the Windows installation finished?" --height=300 --width=300; then
+		wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/rpmbuild/RPMS/x86_64/lsw-atom-shortcuts-1.0-1.x86_64.rpm
+		rpm-ostree install -yA lsw-atom-shortcuts-1.0-1.x86_64.rpm
+		exit 0
+	else
+		if zenity --question --title "Setup" --text "Do you want to revert all changes? WARNING: This will ERASE all Docker Compose data!" --height=300 --width=360; then
+        	sudo docker compose down --rmi=all --volumes
+        	exit 7
 		fi
+	fi
 
 }
 
@@ -101,25 +93,19 @@ hwcheck () {
     	local available_gb=$(( available_kb / 1024 / 1024 ))
     	_cram=$(( total_gb / 3 ))
     	if (( _cram < 4 )); then
-        	local title="Error"
-        	ocal msg="System RAM too low. At least 12GB total is required to continue."
-        	_msgbox_
+			nonfatal "Not enough RAM. At least 12GB total is required to continue."
         	exit 5
     	fi
     	# Enforce availability with 1GB buffer (to avoid rounding issues)
     	if (( available_gb < (_cram + 1) )); then
-        	local title="Error"
-        	local msg="Not enough free RAM. Close some applications and try again."
-        	_msgbox_
+			nonfatal "Not enough free RAM. Close some applications and try again."
         	exit 5
     	fi
     	# CPU thread check
     	local _total_threads=$(nproc)
     	_ccpu=$(( _total_threads / 2 ))
     	if (( _ccpu < 2 )); then
-        	local title="Error"
-        	local msg="Not enough CPU threads to install Windows hypervisor, minimum 4."
-        	_msgbox_
+			nonfatal "Not enough CPU threads to install Windows hypervisor, minimum 4."
         	exit 6
     	fi
 

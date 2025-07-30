@@ -5,98 +5,108 @@ flatpak_run=""
 # supermenu checklist
 osupermenu () {
 
-    local oofice_status=$([ "$_oofice" = "org.onlyoffice.desktopeditors" ] && echo "ON" || echo "OFF")
-    local msteams_status=$([ "$_msteams" = "com.github.IsmaelMartinez.teams_for_linux" ] && echo "ON" || echo "OFF")
-    local anyd_status=$([ "$_anyd" = "com.anydesk.Anydesk" ] && echo "ON" || echo "OFF")
-    local slck_status=$([ "$_slck" = "com.slack.Slack" ] && echo "ON" || echo "OFF")
-    local notion_status=$([ "$_notion" = "io.github.brunofin.Cohesion" ] && echo "ON" || echo "OFF")
-    local gimp_status=$([ "$_gimp" = "org.gimp.GIMP" ] && echo "ON" || echo "OFF")
-    local inksc_status=$([ "$_inksc" = "org.inkscape.Inkscape" ] && echo "ON" || echo "OFF")
-    local fcad_status=$([ "$_fcad" = "org.freecad.FreeCAD" ] && echo "ON" || echo "OFF")
-    local drslv_status=$([ "$_drslv" = "yes" ] && echo "ON" || echo "OFF")
-    local blender_status=$([ "$_blender" = "org.blender.Blender" ] && echo "ON" || echo "OFF")
-    local chrome_status=$([ "$_chrome" = "com.google.Chrome" ] && echo "ON" || echo "OFF")
-    local zen_status=$([ "$_zen" = "app.zen_browser.zen" ] && echo "ON" || echo "OFF")
-    local drktb_status=$([ "$_drktb" = "org.darktable.Darktable" ] && echo "ON" || echo "OFF")
-    local foli_status=$([ "$_foli" = "com.github.johnfactotum.Foliate" ] && echo "ON" || echo "OFF")
-    local kcad_status=$([ "$_kcad" = "org.kicad.KiCad" ] && echo "ON" || echo "OFF")
-    local fig_status=$([ "$_fig" = "1" ] && echo "ON" || echo "OFF")
-    local pnta_status=$([ "$_pnta" = "com.github.PintaProject.Pinta" ] && echo "ON" || echo "OFF")
-    local krt_status=$([ "$_krt" = "org.kde.krita" ] && echo "ON" || echo "OFF")
-    local klive_status=$([ "$_klive" = "org.kde.kdenlive" ] && echo "ON" || echo "OFF")
-    local audc_status=$([ "$_audc" = "org.audacityteam.Audacity" ] && echo "ON" || echo "OFF")
+    local selection_str
+    local selection
+    local selected
+    local search_item
+    local item
+    declare -a search_item=(
+        "Zen Browser"
+        "Google Chrome"
+        "OnlyOffice"
+        "Foliate"
+        "Microsoft Teams"
+        "Anydesk"
+        "Slack"
+        "Figma"
+        "Cohesion"
+        "Darktable"
+        "Pinta"
+        "Krita"
+        "GIMP"
+        "Audacity"
+        "Inkscape"
+        "FreeCAD"
+        "KiCad"
+        "Kdenlive"
+        "Blender"
+        "DaVinci Resolve"
+    )
 
-    while :; do
+    while true; do
 
-        local selection
-        selection=$(whiptail --title "$msg131" --checklist \
-            "$msg131" 20 78 15 \
-            "Zen" "$msg128" $zen_status \
-            "Chrome" "$msg129" $chrome_status \
-            "Onlyoffice" "$msg099" $oofice_status \
-            "Foliate" "$msg149" $foli_status \
-            "MS Teams" "$msg100" $msteams_status \
-            "Anydesk" "$msg101" $anyd_status \
-            "Slack" "$msg102" $slck_status \
-            "Figma" "$msg223" $fig_status \
-            "Cohesion" "$msg103" $notion_status \
-            "Darktable" "$msg148" $drktb_status \
-            "Pinta" "$msg224" $pnta_status \
-            "Krita" "$msg225" $krt_status \
-            "GIMP" "$msg104" $gimp_status \
-            "Audacity" "$msg242" $audc_status \
-            "Inkscape" "$msg105" $inksc_status \
-            "FreeCAD" "$msg106" $fcad_status \
-            "KiCad" "$msg222" $kcad_status \
-            "Kdenlive" "$msg241" $klive_status \
-            "Blender" "$msg159" $blender_status \
-            "DaVinci Resolve" "$msg107" $drslv_status \
-            3>&1 1>&2 2>&3)
+        selection_str=$(zenity --list --checklist --title="Office Menu" \
+        	--column="" \
+        	--column="Apps" \
+            FALSE "Zen Browser" \
+            FALSE "Google Chrome" \
+            FALSE "OnlyOffice" \
+            FALSE "Foliate" \
+            FALSE "Microsoft Teams" \
+            FALSE "Anydesk" \
+            FALSE "Slack" \
+            FALSE "Figma" \
+            FALSE "Cohesion" \
+            FALSE "Darktable" \
+            FALSE "Pinta" \
+            FALSE "Krita" \
+            FALSE "GIMP" \
+            FALSE "Audacity" \
+            FALSE "Inkscape" \
+            FALSE "FreeCAD" \
+            FALSE "KiCad" \
+            FALSE "Kdenlive" \
+            FALSE "Blender" \
+            FALSE "DaVinci Resolve" \
+            --height=830 --width=300 --separator="|")
 
-        exitstatus=$?
-        if [ $exitstatus != 0 ]; then
-        # Exit the script if the user presses Esc
+        if [ $? -ne 0 ]; then
             break
         fi
 
-        [[ "$selection" == *"Onlyoffice"* ]] && _oofice="org.onlyoffice.desktopeditors" || _oofice=""
-        [[ "$selection" == *"MS Teams"* ]] && _msteams="com.github.IsmaelMartinez.teams_for_linux" || _msteams=""
-        [[ "$selection" == *"Anydesk"* ]] && _anyd="com.anydesk.Anydesk" || _anyd=""
-        [[ "$selection" == *"Slack"* ]] && _slck="com.slack.Slack" || _slck=""
-        [[ "$selection" == *"Cohesion"* ]] && _notion="io.github.brunofin.Cohesion" || _notion=""
-        [[ "$selection" == *"Darktable"* ]] && _drktb="org.darktable.Darktable" || _drktb=""
-        [[ "$selection" == *"GIMP"* ]] && _gimp="org.gimp.GIMP" || _gimp=""
-        [[ "$selection" == *"Inkscape"* ]] && _inksc="org.inkscape.Inkscape" || _inksc=""
-        [[ "$selection" == *"FreeCAD"* ]] && _fcad="org.freecad.FreeCAD" || _fcad=""
-        [[ "$selection" == *"DaVinci Resolve"* ]] && _drslv="yes" || _drslv=""
-        [[ "$selection" == *"Blender"* ]] && _blender="org.blender.Blender" || _blender=""
-        [[ "$selection" == *"Chrome"* ]] && _chrome="com.google.Chrome" || _chrome=""
-        [[ "$selection" == *"Zen"* ]] && _zen="app.zen_browser.zen" || _zen=""
-        [[ "$selection" == *"Foliate"* ]] && _foli="com.github.johnfactotum.Foliate" || _foli=""
-        [[ "$selection" == *"KiCad"* ]] && _kcad="org.kicad.KiCad" || _kcad=""
-        [[ "$selection" == *"Figma"* ]] && _fig="1" || _fig=""
-        [[ "$selection" == *"Pinta"* ]] && _pnta="com.github.PintaProject.Pinta" || _pnta=""
-        [[ "$selection" == *"Krita"* ]] && _krt="org.kde.krita" || _krt=""
-        [[ "$selection" == *"Kdenlive"* ]] && _klive="org.kde.kdenlive" || _klive=""
-        [[ "$selection" == *"Audacity"* ]] && _audc="org.audacityteam.Audacity" || _audc=""
+        IFS='|' read -ra selection <<< "$selection_str"
+
+        # compare array elements
+        for item in "${search_item[@]}"; do
+            for selected in "${selection[@]}"; do
+                if [[ "$selected" == "$item" ]]; then
+                    case $item in
+                        "Zen Browser") _zen="app.zen_browser.zen" ;;
+                        "Google Chrome") _chrome="com.google.Chrome" ;;
+                        "OnlyOffice") _oofice="org.onlyoffice.desktopeditors" ;;
+                        "Foliate") _foli="com.github.johnfactotum.Foliate" ;;
+                        "Microsoft Teams") _msteams="com.github.IsmaelMartinez.teams_for_linux" ;;
+                        "Anydesk") _anyd="com.anydesk.Anydesk" ;;
+                        "Slack") _slck="com.slack.Slack" ;;
+                        "Figma") _fig="1" ;;
+                        "Cohesion") _notion="io.github.brunofin.Cohesion" ;;
+                        "Darktable") _drktb="org.darktable.Darktable" ;;
+                        "Pinta") _pnta="com.github.PintaProject.Pinta" ;;
+                        "Krita") _krt="org.kde.krita" ;;
+                        "GIMP") _gimp="org.gimp.GIMP" ;;
+                        "Audacity") _audc="org.audacityteam.Audacity" ;;
+                        "Inkscape") _inksc="org.inkscape.Inkscape" ;;
+                        "FreeCAD") _fcad="org.freecad.FreeCAD" ;;
+                        "KiCad") _kcad="org.kicad.KiCad" ;;
+                        "Kdenlive") _klive="org.kde.kdenlive" ;;
+                        "Blender") _blender="org.blender.Blender" ;;
+                        "DaVinci Resolve") _drslv="yes" ;;
+                    esac
+                fi
+            done
+        done
 
         install_flatpak
         install_native
         figma_t
         if [[ -n "$_drslv" ]]; then
-            local title="$msg006"
-            local msg="$msg034"
-            _msgbox_
+            zenity --warning --title "DaVinci Resolve" --text "$msg034" --height=300 --width=300
             local script="davincibox" && _invoke_
         fi
         if [[ -n "$flatpak_run" ]]; then
-            local title="$msg006"
-            local msg="$msg036"
-            _msgbox_
+            zenity --info --title "$msg006" --text "$msg036" --height=300 --width=300
         else
-            local title="$msg006"
-            local msg="$msg018"
-            _msgbox_
+            zenity --info --title "$msg006" --text "$msg018" --height=300 --width=300
         fi
         break
 
@@ -123,22 +133,18 @@ install_flatpak () {
             flatpak_in_lib
             _flatpak_
         else
-            if whiptail --title "$msg006" --yesno "$msg085" 8 78; then
+            if zenity --question --title "$msg006" --text "$msg085" --height=300 --width=300; then
                 flatpak_run="1"
                 flatpak_in_lib
                 _flatpak_
             else
-                local title="$msg030"
-                local msg="$msg132"
-                _msgbox_
+                nonfatal "$msg132"
                 return 1
             fi
         fi
         if [[ -n "$_gimp" ]]; then
-            if whiptail --title "PhotoGIMP" --yesno "$msg271" 12 78; then
-                local title="PhotoGIMP"
-                local msg="$msg272"
-                _msgbox_
+            if zenity --question --title "PhotoGIMP" --text "$msg271" --height=300 --width=300; then
+                zenity --info --title "PhotoGIMP" --text "$msg272" --height=300 --width=300
                 flatpak run org.gimp.GIMP & sleep 1
                 PID=($(pgrep -f "gimp"))
                 if [ -z "$PID" ]; then
