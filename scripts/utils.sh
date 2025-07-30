@@ -122,7 +122,7 @@ install_native () {
     fi
     # add ROCm
     if [[ -n "$_rocm" ]]; then
-        _packages+=(rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo)
+        _packages+=(rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl clinfo)
     fi
     _install_
     # final setup adjustments
