@@ -35,7 +35,7 @@ _install_ () {
     declare -a _to_install=()
     if [[ -n "$_packages" ]]; then
         for pkg in "${_packages[@]}"; do
-            if ! rpm-ostree status --json | jq -r '.deployments[0].packages[]' | grep -q "^$pkg$"; then
+            if ! rpm -qi "$pkg" &>/dev/null; then
                 _to_install+=("$pkg")
             fi
         done
