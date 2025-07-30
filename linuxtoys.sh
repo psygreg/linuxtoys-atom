@@ -32,7 +32,7 @@ wget -q -O - "https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/head
 sleep 1
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
 # logger
-logfile="$HOME/.local/linuxtoys-log.txt"
+logfile="${HOME}/.local/linuxtoys-log.txt"
 _log_
 # language and upd checks
 _lang_
