@@ -47,19 +47,19 @@ sudo_rq
 while true; do
 
     CHOICE=$(zenity --list --title="LinuxToys" \
-        --column="$msg274" \
-        "$msg120" \
-        "$msg121" \
-        "$msg122" \
-        "$msg123" \
-        "$msg143" \
-        "$msg227" \
-        "$msg199" \
+        --column="${msg274}" \
+        "${msg120}" \
+        "${msg121}" \
+        "${msg122}" \
+        "${msg123}" \
+        "${msg143}" \
+        "${msg227}" \
+        "${msg199}" \
         "" \
-        "$msg124" \
+        "${msg124}" \
         "GitHub" \
-        "$msg275" \
-        "$msg059" \
+        "${msg275}" \
+        "${msg059}" \
         --height=500 --width=360)
         #"7" "UniWine" \ -- disabled option
 
@@ -68,17 +68,17 @@ while true; do
    	fi
 
     case $CHOICE in
-    "$msg120") script="utils" && _invoke_ ;;
-    "$msg121") script="office" && _invoke_ ;;
-    "$msg122") script="game" && _invoke_ ;;
-    "$msg123") script="extras" && _invoke_ ;;
-    "$msg143") script="devs" && _invoke_ ;;
-    "$msg227") script="autosetup" && _invoke_ ;;
-    "$msg199") script="console" && _invoke_ ;;
+    "${msg120}") script="utils" && _invoke_ ;;
+    "${msg121}") script="office" && _invoke_ ;;
+    "${msg122}") script="game" && _invoke_ ;;
+    "${msg123}") script="extras" && _invoke_ ;;
+    "${msg143}") script="devs" && _invoke_ ;;
+    "${msg227}") script="autosetup" && _invoke_ ;;
+    "${msg199}") script="console" && _invoke_ ;;
     # 7) subscript="uniwine" && _invoke_ ;; -- disabled option
-    "$msg124") zenity --info --title "LinuxToys Atom v${current_ltver}" --text "$msg125" --height=300 --width=300;;
+    "${msg124}") zenity --info --title "LinuxToys Atom v${current_ltver}" --text "$msg125" --height=300 --width=300;;
     "GitHub") xdg-open https://github.com/psygreg/linuxtoys ;;
-    "$msg059") break ;;
+    "${msg059}") break ;;
     *) echo "Invalid Option" ;;
     esac
 done
