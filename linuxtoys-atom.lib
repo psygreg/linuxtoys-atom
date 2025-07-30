@@ -39,9 +39,8 @@ _install_ () {
                 _to_install+=("$pkg")
             fi
         done
-        packages_str="${_to_install[*]}"
-        if [[ -n "$packages_str" ]]; then
-            rpm-ostree install -yA "$packages_str"
+        if [[ -n "$_to_install" ]]; then
+            rpm-ostree install -yA "${_to_install[@]}"
         else
             return 1
         fi
