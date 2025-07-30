@@ -22,6 +22,7 @@ gsupermenu () {
         "Bedrock Launcher"
         "Discord"
         "Gamemode"
+        "Lossless Scaling - LSFG-VK"
         "Gamescope"
         "Mangohud"
         "GOverlay"
@@ -47,6 +48,7 @@ gsupermenu () {
             FALSE "Bedrock Launcher" \
             FALSE "Discord" \
             FALSE "Gamemode" \
+            FALSE "Lossless Scaling - LSFG-VK" \
             FALSE "Gamescope" \
             FALSE "Mangohud" \
             FALSE "GOverlay" \
@@ -55,7 +57,7 @@ gsupermenu () {
             FALSE "Oversteer" \
             FALSE "WiVRn" \
             FALSE "Wine - ${msg112}" \
-            --height=780 --width=310 --separator="|")
+            --height=810 --width=310 --separator="|")
 
         if [ $? -ne 0 ]; then
             break
@@ -79,6 +81,7 @@ gsupermenu () {
                         "Bedrock Launcher") _mcbe="io.mrarm.mcpelauncher" ;;
                         "Discord") _disc="com.discordapp.Discord" ;;
                         "Gamemode") _gmode="gamemode" ;;
+                        "Lossless Scaling - LSFG-VK") _lsfgvk="yes" ;;
                         "Gamescope") _gscope="gamescope" ;;
                         "Mangohud") _mhud="mangohud" ;;
                         "GOverlay") _govl="goverlay" ;;
@@ -104,6 +107,10 @@ gsupermenu () {
                 local script="shader-patcher-atom" && _invoke_
                 sboost_run="1"
             fi
+        fi
+        # lossless scaling
+        if [[ -n "$_lsfgvk" ]]; then
+            lsfg_vk_in
         fi
         # check if reboot is needed
         if [[ -n "$flatpak_run" || -n "$dsplitm_run" || -n "$sboost_run" ]]; then
@@ -185,6 +192,81 @@ install_flatpak () {
                 nonfatal "$msg132"
             fi
         fi
+    fi
+
+}
+
+# install lsfg-vk and flatpak runtimes
+lsfg_vk_in () {
+
+    local tag=$(curl -s "https://api.github.com/repos/PancakeTAS/lsfg-vk/releases/latest" | grep -oP '"tag_name": "\K(.*)(?=")')
+    local ver="${tag#v}"
+    if rpm -qi lsfg-vk &> /dev/null; then
+        if [[ "$(rpm -q --queryformat '%{VERSION}' lsfg-vk)" != "$ver" ]]; then
+            wget https://github.com/PancakeTAS/lsfg-vk/releases/download/${tag}/lsfg-vk-${ver}.x86_64.rpm
+            rpm-ostree install -yA lsfg-vk-${ver}.x86_64.rpm
+            if command -v flatpak &> /dev/null; then
+                wget https://github.com/PancakeTAS/lsfg-vk/releases/download/${tag}/org.freedesktop.Platform.VulkanLayer.lsfg_vk_23.08.flatpak
+                wget https://github.com/PancakeTAS/lsfg-vk/releases/download/${tag}/org.freedesktop.Platform.VulkanLayer.lsfg_vk_24.08.flatpak
+                flatpak install --reinstall --system -y ./org.freedesktop.Platform.VulkanLayer.lsfg_vk_23.08.flatpak 
+                flatpak install --reinstall --system -y ./org.freedesktop.Platform.VulkanLayer.lsfg_vk_24.08.flatpak
+                rm org.freedesktop.Platform.VulkanLayer.lsfg_vk_23.08.flatpak
+                rm org.freedesktop.Platform.VulkanLayer.lsfg_vk_24.08.flatpak
+                local flatapps=(net.lutris.Lutris com.valvesoftware.Steam com.heroicgameslauncher.hgl org.prismlauncher.PrismLauncher com.stremio.Stremio at.vintagestory.VintageStory org.vinegarhq.Sober)
+                for flatapp in "${flatapps[@]}"; do
+                    if flatpak info "$flatapp" &> /dev/null; then
+                        flatpak override --user --filesystem=$HOME/.config/lsfg-vk:rw "$flatapp"
+                        flatpak override --user --env=LSFG_CONFIG=$HOME/.config/lsfg-vk/conf.toml "$flatapp"
+                        if [ "$flatapp" != "com.valvesoftware.Steam" ]; then
+                            flatpak override --user --filesystem="$DLL_ABSOLUTE_PATH:ro" "$flatapp"
+                        fi
+                    fi
+                done
+            fi
+            rm lsfg-vk-1.0.0.x86_64.rpm
+        else
+            zenity --info --text "LSFG-VK - $msg278" --height=300 --width=300
+        fi
+    else
+        wget https://github.com/PancakeTAS/lsfg-vk/releases/download/v1.0.0/lsfg-vk-1.0.0.x86_64.rpm
+        rpm-ostree install -yA lsfg-vk-1.0.0.x86_64.rpm
+        rm lsfg-vk-1.0.0.x86_64.rpm
+        DLL_FIND="$(find / -name Lossless.dll 2>/dev/null | head -n 1)"
+        if [ -z "$DLL_FIND" ]; then
+            nonfatal "Lossless.dll not found. Did you install Lossless Scaling?"
+            return 1
+        fi
+        DLL_ABSOLUTE_PATH=$(dirname "$(realpath "$DLL_FIND")")
+        ESCAPED_DLL_PATH=$(printf '%s\n' "$DLL_ABSOLUTE_PATH" | sed 's/[&/\]/\\&/g')
+        CONF_LOC="${HOME}/.config/lsfg-vk/conf.toml"
+        if [ ! -f "$CONF_LOC" ]; then
+            # make sure target dir exists
+            mkdir -p ${HOME}/.config/lsfg-vk/
+            wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/patches/conf.toml
+            mv conf.toml ${HOME}/.config/lsfg-vk/
+        fi
+        # register dll location in config file
+        sed -i -E "s|^# dll = \".*\"|dll = \"$ESCAPED_DLL_PATH\"|" ${HOME}/.config/lsfg-vk/conf.toml
+        # flatpak runtime
+        if command -v flatpak &> /dev/null; then
+            wget https://github.com/PancakeTAS/lsfg-vk/releases/download/${tag}/org.freedesktop.Platform.VulkanLayer.lsfg_vk_23.08.flatpak
+            wget https://github.com/PancakeTAS/lsfg-vk/releases/download/${tag}/org.freedesktop.Platform.VulkanLayer.lsfg_vk_24.08.flatpak
+            flatpak install --reinstall --system -y ./org.freedesktop.Platform.VulkanLayer.lsfg_vk_23.08.flatpak 
+            flatpak install --reinstall --system -y ./org.freedesktop.Platform.VulkanLayer.lsfg_vk_24.08.flatpak
+            rm org.freedesktop.Platform.VulkanLayer.lsfg_vk_23.08.flatpak
+            rm org.freedesktop.Platform.VulkanLayer.lsfg_vk_24.08.flatpak
+            local flatapps=(net.lutris.Lutris com.valvesoftware.Steam com.heroicgameslauncher.hgl org.prismlauncher.PrismLauncher com.stremio.Stremio at.vintagestory.VintageStory org.vinegarhq.Sober)
+            for flatapp in "${flatapps[@]}"; do
+                if flatpak info "$flatapp" &> /dev/null; then
+                    flatpak override --user --filesystem=$HOME/.config/lsfg-vk:rw "$flatapp"
+                    flatpak override --user --env=LSFG_CONFIG=$HOME/.config/lsfg-vk/conf.toml "$flatapp"
+                    if [ "$flatapp" != "com.valvesoftware.Steam" ]; then
+                        flatpak override --user --filesystem="$DLL_ABSOLUTE_PATH:ro" "$flatapp"
+                    fi
+                fi
+            done
+        fi
+        rm lsfg-vk-1.0.0.x86_64.rpm
     fi
 
 }

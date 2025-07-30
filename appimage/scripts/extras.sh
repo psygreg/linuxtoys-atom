@@ -274,37 +274,6 @@ lsw_in () {
 
 }
 
-# install lsfg-vk -- TODO REWORK after 1.0 release
-
-lsfg_vk_in () {
-
-    local title="LSFG-VK"
-    local msg="$msg251"
-    _msgbox_
-    if whiptail --title "LSFG-VK" --yesno "$msg250" 12 78; then
-        # add check for DLL location
-        DLL_FIND="$(find / -name Lossless.dll 2>/dev/null | head -n 1)"
-        if [ -z "$DLL_FIND" ]; then
-            local title="LSFG-VK"
-            local msg="Lossless.dll not found. Did you install Lossless Scaling?"
-            _msgbox_
-            return 1
-        fi
-        curl -sSf https://pancake.gay/lsfg-vk.sh | sh
-        if [ $? -eq 0 ]; then
-            # check flatpaks
-            if command -v flatpak &> /dev/null; then
-                curl -fsSL https://raw.githubusercontent.com/psygreg/lsfg-vk-flatpak/main/flatpak-enabler.sh | bash
-            fi
-            local title="LSFG-VK"
-            local msg="$msg249"
-            _msgbox_
-            xdg-open https://github.com/PancakeTAS/lsfg-vk/wiki/Configuring-lsfg%E2%80%90vk
-        fi
-    fi
-
-}
-
 # install RPMFusion
 rpmfusion_in () {
 
@@ -365,7 +334,6 @@ while :; do
         --column="" \
         "$msg044" \
         "$msg048" \
-        "$msg248" \
         "PhotoGIMP" \
         "$msg258" \
         "$msg177" \
@@ -377,7 +345,7 @@ while :; do
         "$msg078" \
         "$msg209" \
         "$msg059" \
-        --width=500 --height=570)
+        --width=500 --height=550)
 
     if [ $? -ne 0 ]; then
         break
@@ -386,7 +354,6 @@ while :; do
     case $CHOICE in
         "$msg044") ufw_in ;;
         "$msg048") lucidglyph_in ;;
-        "$msg248") lsfg_vk_in ;;
         "PhotoGIMP") photogimp_in ;;
         "$msg258") optimizer_ ;;
         "$msg177") psaver ;;
