@@ -78,6 +78,14 @@ _invoke_ () {
     fi
 
 }
+# for using appimage lib and langfiles
+_invoke_app_ () {
+
+    if [[ -n "$script" ]]; then
+        bash <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/appimage/scripts/${script}.sh)
+    fi
+
+}
 
 ## non-fastbash functions can be added HERE
 

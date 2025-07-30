@@ -101,7 +101,7 @@ osupermenu () {
         figma_t
         if [[ -n "$_drslv" ]]; then
             zenity --warning --title "DaVinci Resolve" --text "$msg034" --height=300 --width=300
-            local script="davincibox" && _invoke_
+            local script="davincibox" && _invoke_app_
         fi
         if [[ -n "$flatpak_run" ]]; then
             zenity --info --title "$msg006" --text "$msg036" --height=300 --width=300

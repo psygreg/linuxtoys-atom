@@ -267,7 +267,7 @@ lsw_in () {
     
     if zenity --question --title "LSW" --text "$msg217" --height=300 --width=300; then
         cd $HOME
-        bash <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/lsw-in-atom.sh)
+        local script="lsw-in-atom" && _invoke_app_
         sleep 1
         rm txtbox
     fi

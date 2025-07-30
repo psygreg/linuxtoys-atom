@@ -96,7 +96,7 @@ gsupermenu () {
         install_native
         # custom runners
         if [[ -n "$_runner" ]]; then
-            local script="$_runner" && _invoke_
+            local script="$_runner" && _invoke_app_
         fi
         # shader booster
         if [ ! -f /.autopatch.state ]; then

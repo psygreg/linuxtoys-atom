@@ -257,7 +257,7 @@ others_t () {
 }
 
 # runtime
-source https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib
+source linuxtoys-atom.lib
 _lang_
 source ${langfile}
 sleep 1
