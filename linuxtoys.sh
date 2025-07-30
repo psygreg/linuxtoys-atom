@@ -7,7 +7,7 @@ fatal() {
 }
 
 # updater
-current_ltver="2.0"
+current_ltver="1.0"
 ver_upd () {
     local ver
     ver=$(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/ver)
