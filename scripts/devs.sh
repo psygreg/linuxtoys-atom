@@ -102,7 +102,7 @@ install_native () {
 
 	local _packages=($_nvim $_plsr $_nvm $_mvn $_unity $_dotnet $_ghcli)
 	if [[ -n "$_pyenv" ]]; then
-		_packages+=("make gcc patch zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel libuuid-devel gdbm-libs libnsl2")
+		_packages+=(make gcc patch zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel libuuid-devel gdbm-libs libnsl2)
 	fi
     if [[ -n "$_packages" ]]; then
         if [[ -n "$_unity" ]]; then
@@ -147,10 +147,10 @@ jdk_install () {
     local javas=($_jdk8 $_jdk11 $_jdk17 $_jdk21 $_jdk24)
     for jav in "${javas[@]}"; do
         if [ $jav == "8" ]; then
-			_packages+=("java-1.8.0-openjdk java-1.8.0-openjdk-devel")
+			_packages+=(java-1.8.0-openjdk java-1.8.0-openjdk-devel)
             continue
         else
-		    _packages+=("java-${jav}-openjdk java-${jav}-openjdk-devel")
+		    _packages+=(java-${jav}-openjdk java-${jav}-openjdk-devel)
         fi
     done
 	_install_

@@ -13,7 +13,7 @@ davinciboxdeps () {
         sudo install -o 0 -g 0 nvidia-container-toolkit.repo /etc/yum.repos.d/nvidia-container-toolkit.repo
         rm nvidia-container-toolkit.repo
         NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
-        _packages+=("nvidia-container-toolkit-${NVIDIA_CONTAINER_TOOLKIT_VERSION} nvidia-container-toolkit-base-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container-tools-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container1-${NVIDIA_CONTAINER_TOOLKIT_VERSION}")
+        _packages+=(nvidia-container-toolkit-${NVIDIA_CONTAINER_TOOLKIT_VERSION} nvidia-container-toolkit-base-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container-tools-${NVIDIA_CONTAINER_TOOLKIT_VERSION} libnvidia-container1-${NVIDIA_CONTAINER_TOOLKIT_VERSION})
     elif [[ -n "$amdGPU" ]]; then
         # select ROCm or Rusticl
         while true; do
@@ -28,8 +28,8 @@ davinciboxdeps () {
    			fi
 
             case $CHOICE in
-            	"ROCm - ${msg255}") _packages+=("rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo") ;;
-            	"RustiCL - ${msg256}") _packages+=("mesa-libOpenCL clinfo") ;;
+            	"ROCm - ${msg255}") _packages+=(rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo) ;;
+            	"RustiCL - ${msg256}") _packages+=(mesa-libOpenCL clinfo) ;;
             	*) echo "Invalid Option" ;;
             esac
 

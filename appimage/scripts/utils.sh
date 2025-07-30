@@ -107,22 +107,22 @@ install_native () {
         curl -O https://download.docker.com/linux/fedora/docker-ce.repo
         sudo install -o 0 -g 0 -m644 docker-ce.repo /etc/yum.repos.d/docker-ce.repo
         rm docker-ce.repo
-        _packages+=("docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin")
+        _packages+=(docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin)
     fi
     # add openrazer
     if [[ -n "$_oprzr" ]]; then
         curl -O https://openrazer.github.io/hardware:razer.repo
         sudo install -o 0 -g 0 -m644 hardware:razer.repo /etc/yum.repos.d/hardware:razer.repo
         rm razer.repo
-        _packages+=("openrazer-meta kernel-devel")
+        _packages+=(openrazer-meta kernel-devel)
     fi
     # add mesa openCL
     if [[ -n "$_rcl" ]]; then
-        _packages+=("mesa-libOpenCL clinfo")
+        _packages+=(mesa-libOpenCL clinfo)
     fi
     # add ROCm
     if [[ -n "$_rocm" ]]; then
-        _packages+=("rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo")
+        _packages+=(rocm-comgr rocm-runtime rccl rocalution rocblas rocfft rocm-smi rocsolver rocsparse rocm-device-libs rocminfo rocm-hip hiprand rocm-opencl ocl-icd clinfo)
     fi
     _install_
     # final setup adjustments
