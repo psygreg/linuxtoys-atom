@@ -7,12 +7,15 @@ mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/bin
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib
 
 # get updated LinuxToys and set proper filename
-cp linuxtoys.sh linuxtoys1.sh
-mv linuxtoys1.sh linuxtoys
-mv -f linuxtoys appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+cp -f appimage/linuxtoys.sh appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+mv appimagebuild/LinuxToys-Atom.AppDir/usr/bin/linuxtoys.sh appimagebuild/LinuxToys-Atom.AppDir/usr/bin/linuxtoys
+
+# get updated libraries
+cp -f linuxtoys-atom.lib appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+cp -f src/lang/* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 
 # fetch dependencies
-cp /usr/bin/curl /usr/bin/wget /usr/bin/git /usr/bin/whiptail /usr/bin/bash appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+cp /usr/bin/curl /usr/bin/wget /usr/bin/git /usr/bin/zenity /usr/bin/bash appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 # fetch libraries for dependencies
 for bin in curl wget git whiptail bash; do
     for dep in $(ldd /usr/bin/$bin | awk '{if ($3 ~ /^\//) print $3}'); do
