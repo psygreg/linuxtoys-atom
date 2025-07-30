@@ -46,7 +46,7 @@ sudo_rq
 # main menu
 while true; do
 
-    CHOICE=$(zenity --list --title="LinuxToys" \
+    CHOICE=$(zenity --list --title="LinuxToys Atom" \
         --column="${msg274}" \
         "${msg120}" \
         "${msg121}" \

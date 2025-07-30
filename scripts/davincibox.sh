@@ -32,6 +32,8 @@ davinciboxdeps () {
             	"RustiCL - ${msg256}") _packages+=("mesa-libOpenCL clinfo") ;;
             	*) echo "Invalid Option" ;;
             esac
+
+			break		
         done
     elif [[ -n "$intelGPU" ]]; then
         # install intel compute runtime
