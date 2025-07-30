@@ -16,6 +16,7 @@ cp -f src/lang/* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 
 # fetch dependencies
 cp /usr/bin/curl /usr/bin/wget /usr/bin/git /usr/bin/zenity /usr/bin/bash appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+cp /usr/bin/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 # fetch libraries for dependencies
 for bin in curl wget git bash; do
     for dep in $(ldd /usr/bin/$bin | awk '{if ($3 ~ /^\//) print $3}'); do

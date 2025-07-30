@@ -130,7 +130,7 @@ inresolve () {
 
     davinciboxdeps
     cd $HOME
-    git clone https://github.com/zelikos/davincibox.git
+    git clone git@github.com:zelikos/davincibox.git
     sleep 1
     cd davincibox
     getresolve
