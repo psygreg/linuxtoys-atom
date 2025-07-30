@@ -173,6 +173,7 @@ vinegar_in () {
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
 _lang_
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/lang/${langfile})
+sleep 1
 zenity --warning --title "$msg187" --text "$msg188" --height=300 --width=300
 if command -v flatpak &> /dev/null && flatpak list | grep -q 'net.lutris.Lutris' || command -v flatpak &> /dev/null && flatpak list | grep -q 'com.heroicgameslauncher.hgl' || command -v flatpak &> /dev/null && flatpak list | grep -q 'com.valvesoftware.Steam'; then
     runners_menu

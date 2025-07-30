@@ -113,6 +113,7 @@ hwcheck () {
 
 # runtime
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
+sleep 1
 hwcheck
 if command -v docker &> /dev/null; then
 		win_install

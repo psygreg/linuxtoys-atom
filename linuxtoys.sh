@@ -29,6 +29,7 @@ sudo_rq () {
 . /etc/os-release
 wget -q -O - "https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/README.md" > /dev/null || fatal "LinuxToys requires an internet connection to proceed."
 # call linuxtoys atom lib
+sleep 1
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
 # logger
 logfile="$HOME/.local/linuxtoys-log.txt"
@@ -36,7 +37,10 @@ _log_
 # language and upd checks
 _lang_
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/lang/${langfile})
+sleep 1
+# update checker
 ver_upd
+# request sudo for future usage
 sudo_rq
 
 # main menu
