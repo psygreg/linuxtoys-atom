@@ -78,6 +78,7 @@ while true; do
     # 7) subscript="uniwine" && _invoke_ ;; -- disabled option
     "${msg124}") zenity --info --title "LinuxToys Atom v${current_ltver}" --text "$msg125" --height=300 --width=300;;
     "GitHub") xdg-open https://github.com/psygreg/linuxtoys ;;
+    "${msg275}") xdg-open https://ko-fi.com/psygreg ;;
     "${msg059}") break ;;
     *) echo "Invalid Option" ;;
     esac
