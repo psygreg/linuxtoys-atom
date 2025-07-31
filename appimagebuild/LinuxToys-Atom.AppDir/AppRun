@@ -5,6 +5,8 @@ export PATH="$APPDIR/usr/bin:$PATH"
 export SSL_CERT_FILE="$APPDIR/etc/ssl/certs/ca-certificates.crt"
 export SSL_CERT_DIR="$APPDIR/etc/ssl/certs"
 export CURL_CA_BUNDLE="$APPDIR/etc/ssl/certs/ca-certificates.crt"
+# set git path
+export GIT_EXEC_PATH="$APPDIR/usr/lib/git-core"
 
 # if not running in terminal (no tty), try to spawn one
 if [ ! -t 1 ]; then
