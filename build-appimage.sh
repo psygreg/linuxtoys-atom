@@ -5,6 +5,7 @@ cd "$(dirname "$(realpath "$0")")"
 # make directory structure
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/bin
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib
+mkdir -p appimagebuild/LinuxToys-Atom.AppDir/etc/ssl/certs/
 
 # get updated LinuxToys and set proper filename
 cp -f appimage/linuxtoys.sh appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
@@ -17,12 +18,15 @@ cp -f src/lang/* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 # fetch dependencies
 cp /usr/bin/curl /usr/bin/wget /usr/bin/git /usr/bin/zenity /usr/bin/bash /usr/bin/ca-certificates appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 cp /usr/bin/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+cp /etc/ssl/certs/ca-certificates.crt appimagebuild/LinuxToys-Atom.AppDir/etc/ssl/certs/
+
 # fetch libraries for dependencies
 for bin in curl wget git bash; do
     for dep in $(ldd /usr/bin/$bin | awk '{if ($3 ~ /^\//) print $3}'); do
         cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib/;
     done;
 done
+cp /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu
 
 # adjust library dir structure
 mv appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/

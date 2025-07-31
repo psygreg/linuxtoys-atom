@@ -1,6 +1,10 @@
 #!/bin/bash
 export LD_LIBRARY_PATH="$APPDIR/usr/lib:$LD_LIBRARY_PATH"
 export PATH="$APPDIR/usr/bin:$PATH"
+# Set SSL certificate path
+export SSL_CERT_FILE="$APPDIR/etc/ssl/certs/ca-certificates.crt"
+export SSL_CERT_DIR="$APPDIR/etc/ssl/certs"
+export CURL_CA_BUNDLE="$APPDIR/etc/ssl/certs/ca-certificates.crt"
 
 # if not running in terminal (no tty), try to spawn one
 if [ ! -t 1 ]; then
