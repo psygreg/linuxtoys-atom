@@ -32,7 +32,7 @@ mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-
 cp -u /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-core/
 # get git helpers dependencies
 for helper in /usr/lib/git-core/*; do
-    for hldep in $(ldd /usr/lib/git-core/$helper | awk '{if ($3 ~ /^\//) print $3}'); do
+    for hldep in $(ldd $helper | awk '{if ($3 ~ /^\//) print $3}'); do
         cp -u --parents "$hldep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/
     done
 done
