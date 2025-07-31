@@ -59,7 +59,7 @@ gsupermenu () {
             FALSE "Oversteer" \
             FALSE "WiVRn" \
             FALSE "Wine - ${msg112}" \
-            --height=810 --width=360 --separator="|")
+            --height=830 --width=360 --separator="|")
 
         if [ $? -ne 0 ]; then
             break
