@@ -19,6 +19,7 @@ gsupermenu () {
         "SteamTinkerLaunch"
         "Sober"
         "Osu!"
+        "Prism Launcher"
         "Bedrock Launcher"
         "Discord"
         "Gamemode"
@@ -45,6 +46,7 @@ gsupermenu () {
             FALSE "SteamTinkerLaunch" \
             FALSE "Sober" \
             FALSE "Osu!" \
+            FALSE "Prism Launcher" \
             FALSE "Bedrock Launcher" \
             FALSE "Discord" \
             FALSE "Gamemode" \
@@ -78,6 +80,7 @@ gsupermenu () {
                         "SteamTinkerLaunch") _stl="com.valvesoftware.Steam.Utility.steamtinkerlaunch" ;;
                         "Sober") _sobst="org.vinegarhq.Sober" ;;
                         "Osu!") _osuf="sh.ppy.osu" ;;
+                        "Prism Launcher") _prism="org.prismlauncher.PrismLauncher" ;;
                         "Bedrock Launcher") _mcbe="io.mrarm.mcpelauncher" ;;
                         "Discord") _disc="com.discordapp.Discord" ;;
                         "Gamemode") _gmode="gamemode" ;;
@@ -147,7 +150,7 @@ install_native () {
 # flatpak packages
 install_flatpak () {
 
-    local _flatpaks=($_lutris $_heroic $_pp $_stl $_sobst $_disc $_wivrn $_steer $_mcbe $_osuf)
+    local _flatpaks=($_lutris $_heroic $_pp $_stl $_sobst $_disc $_wivrn $_steer $_mcbe $_osuf $_prism)
     if [[ -n "$_flatpaks" ]] || [[ -n "$_steam" ]] || [[ -n "$_gfn" ]]; then
         if command -v flatpak &> /dev/null; then
             flatpak_in_lib
