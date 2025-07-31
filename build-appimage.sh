@@ -23,12 +23,20 @@ cp -u /etc/ssl/certs/ca-certificates.crt appimagebuild/LinuxToys-Atom.AppDir/etc
 # fetch libraries for dependencies
 for bin in curl wget git bash; do
     for dep in $(ldd /usr/bin/$bin | awk '{if ($3 ~ /^\//) print $3}'); do
-        cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/;
-    done;
+        cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/
+    done
 done
+
+# get git-core
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-core
 cp -u /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-core/
-cp -u /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
+# get git helpers dependencies
+for helper in /usr/lib/git-core/*; do
+    for hldep in $(ldd /usr/lib/git-core/$helper | awk '{if ($3 ~ /^\//) print $3}'); do
+        cp -u --parents "$hldep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/
+    done
+done
+# cp -u /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
 
 # adjust library dir structure
 mv appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/
