@@ -4,7 +4,7 @@
 cd "$(dirname "$(realpath "$0")")"
 # make directory structure
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/bin
-mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib
+mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib64
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/etc/ssl/certs/
 
 # get updated LinuxToys and set proper filename
@@ -23,17 +23,17 @@ cp -u /etc/ssl/certs/ca-certificates.crt appimagebuild/LinuxToys-Atom.AppDir/etc
 # fetch libraries for dependencies
 for bin in curl wget git bash; do
     for dep in $(ldd /usr/bin/$bin | awk '{if ($3 ~ /^\//) print $3}'); do
-        cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib/;
+        cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/;
     done;
 done
-mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu/git-core
-cp -u /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu/git-core/
-cp -u /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4 appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu/
+mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-core
+cp -u /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-core/
+cp -u /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
 
 # adjust library dir structure
-mv appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/
-rm -r appimagebuild/LinuxToys-Atom.AppDir/usr/lib
-mv appimagebuild/LinuxToys-Atom.AppDir/usr/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/lib
+mv appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/
+rm -r appimagebuild/LinuxToys-Atom.AppDir/usr/lib64
+mv appimagebuild/LinuxToys-Atom.AppDir/usr/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/lib64
 
 # build appimage
 ./appimagebuild/appimagetool-x86_64.AppImage appimagebuild/LinuxToys-Atom.AppDir
