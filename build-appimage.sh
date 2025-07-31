@@ -26,7 +26,7 @@ for bin in curl wget git bash; do
         cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib/;
     done;
 done
-cp /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu
+cp /usr/lib/git-core/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu/git-core/
 
 # adjust library dir structure
 mv appimagebuild/LinuxToys-Atom.AppDir/usr/lib/lib/x86_64-linux-gnu appimagebuild/LinuxToys-Atom.AppDir/usr/
