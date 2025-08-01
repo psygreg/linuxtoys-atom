@@ -87,8 +87,8 @@ lsw_install () {
 hwcheck () {
 
 	# Enforce minimum RAM check
-    	local total_kb=$(grep MemTotal /proc/meminfo | awk '{ print $2 }')
-    	local available_kb=$(grep MemAvailable /proc/meminfo | awk '{ print $2 }')
+    	local total_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+    	local available_kb=$(grep MemAvailable /proc/meminfo | awk '{print $2}')
     	local total_gb=$(( total_kb / 1024 / 1024 ))
     	local available_gb=$(( available_kb / 1024 / 1024 ))
     	_cram=$(( total_gb / 3 ))
