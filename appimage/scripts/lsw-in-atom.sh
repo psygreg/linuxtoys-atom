@@ -16,12 +16,12 @@ docker_install () {
 # windows docker container setup
 win_install () {
 
-		local _packages=(dialog netcat freerdp iproute libnotify)
-		_install_
-		cd $HOME/.config/winapps
-		wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/compose.yaml
-		wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/winapps.conf
-		# make necessary adjustments to compose file
+	local _packages=(dialog netcat freerdp iproute libnotify)
+	_install_
+	cd $HOME/.config/winapps
+	wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/compose.yaml
+	wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/winapps.conf
+	# make necessary adjustments to compose file
     # Cap at 16GB
     if (( _cram > 16 )); then
         _winram=16
