@@ -202,6 +202,7 @@ install_flatpak () {
 # install lsfg-vk and flatpak runtimes
 lsfg_vk_in () {
 
+    cd $HOME
     local tag=$(curl -s "https://api.github.com/repos/PancakeTAS/lsfg-vk/releases/latest" | grep -oP '"tag_name": "\K(.*)(?=")')
     local ver="${tag#v}"
     local DLL_FIND="$(find / -name Lossless.dll 2>/dev/null | head -n 1)"
