@@ -1,5 +1,5 @@
 Name:           linuxtoys-cfg-atom
-Version:        1.0
+Version:        1.1
 Release:        1
 Summary:        A set of tools for Linux presented in a user-friendly way
 BuildArch:      x86_64
@@ -35,6 +35,7 @@ install -m 755 thp-shrinker.conf %{buildroot}/usr/lib/tmpfiles.d
 install -m 755 coredump.conf %{buildroot}/usr/lib/tmpfiles.d
 install -m 755 20-audio-pm.conf %{buildroot}/usr/lib/modprobe.d
 install -m 755 amdgpu.conf %{buildroot}/usr/lib/modprobe.d
+install -m 755 nvidia.conf %{buildroot}/usr/lib/modprobe.d
 install -m 755 blacklist.conf %{buildroot}/usr/lib/modprobe.d
 install -m 755 99-cachyos-settings.conf %{buildroot}/usr/lib/sysctl.d
 install -m 755 00-journal-size.conf %{buildroot}/usr/lib/systemd/journald.conf.d
@@ -50,6 +51,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/lib/modprobe.d/20-audio-pm.conf
 /usr/lib/modprobe.d/amdgpu.conf
 /usr/lib/modprobe.d/blacklist.conf
+/usr/lib/modprobe.d/nvidia.conf
 /usr/lib/tmpfiles.d/coredump.conf
 /usr/lib/tmpfiles.d/thp.conf
 /usr/lib/tmpfiles.d/thp-shrinker.conf
@@ -62,5 +64,5 @@ rm -rf $RPM_BUILD_ROOT
 /etc/sysctl.d/99-splitlock.conf
 
 %changelog
-* Thu Jul  17 2025 Victor Gregory <psygreg@pm.me> - 1.0
-- CachyOS config files port for Fedora Silverblue/Kinoite
+* Thu Jul  17 2025 Victor Gregory <psygreg@pm.me> - 1.1
+- Added Nvidia config file

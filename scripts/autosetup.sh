@@ -4,8 +4,8 @@ optimizer () {
 
     if [ ! -f /.autopatch.state ]; then
         # filtered cachyos systemd configs
-        wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.0-1.x86_64.rpm
-        rpm-ostree install -yA linuxtoys-cfg-atom-1.0-1.x86_64.rpm
+        wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.1-1.x86_64.rpm
+        rpm-ostree install -yA linuxtoys-cfg-atom-1.1-1.x86_64.rpm
         # apply changes by generating initramfs locally
         rpm-ostree initramfs --enable
         # shader booster
@@ -58,6 +58,7 @@ optimizer () {
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
     else
+        ## TODO UPDATER
         nonfatal "$msg234"
     fi
 
