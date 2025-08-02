@@ -29,7 +29,7 @@ done
 # libwget fix
 for lib in /usr/lib/x86_64-linux-gnu/libwget.so.3; do
     for dep in $(ldd $lib | awk '{if ($3 ~ /^\//) print $3}'); do
-        cp -u --parents "$dep" appimagebuild/LinuxToys.AppDir/usr/lib64/
+        cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/
     done
 done
 
