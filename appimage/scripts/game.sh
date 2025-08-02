@@ -270,7 +270,6 @@ lsfg_vk_in () {
                 fi
             done
         fi
-        rm lsfg-vk-1.0.0.x86_64.rpm
     fi
 
 }
