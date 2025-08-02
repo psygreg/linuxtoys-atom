@@ -7,7 +7,7 @@ fatal() {
 }
 
 # updater
-current_ltver="2.2"
+current_ltver="2.3"
 ver_upd () {
     local ver
     ver=$(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/ver)
@@ -55,6 +55,7 @@ while true; do
         "${msg143}" \
         "${msg227}" \
         "${msg199}" \
+        "$msg279" \
         "" \
         "${msg124}" \
         "GitHub" \
@@ -75,6 +76,7 @@ while true; do
     "${msg143}") script="devs" && _invoke_app_ ;;
     "${msg227}") script="autosetup" && _invoke_app_ ;;
     "${msg199}") script="console" && _invoke_app_ ;;
+    "$msg279") script="psypicks" && _invoke_app_ ;;
     # 7) subscript="uniwine" && _invoke_ ;; -- disabled option
     "${msg124}") zenity --info --title "LinuxToys Atom v${current_ltver}" --text "$msg125" --height=300 --width=300;;
     "GitHub") xdg-open https://github.com/psygreg/linuxtoys ;;
