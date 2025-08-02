@@ -61,7 +61,7 @@ while true; do
         "GitHub" \
         "${msg275}" \
         "${msg059}" \
-        --height=500 --width=360)
+        --height=530 --width=360)
         #"7" "UniWine" \ -- disabled option
 
     if [ $? -ne 0 ]; then
