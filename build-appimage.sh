@@ -21,19 +21,17 @@ cp -u /usr/bin/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 cp -u /etc/ssl/certs/ca-certificates.crt appimagebuild/LinuxToys-Atom.AppDir/etc/ssl/certs/
 
 # fetch libraries for dependencies
-for bin in curl wget git bash; do
+for bin in curl wget git bash zenity; do
     for dep in $(ldd /usr/bin/$bin | awk '{if ($3 ~ /^\//) print $3}'); do
         cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/
     done
 done
 # libwget fix
-cp -u /usr/lib/x86_64-linux-gnu/libwget.so.3 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
-cp -u /usr/lib/x86_64-linux-gnu/libgnutls-dane.so.0 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
-cp -u /usr/lib/x86_64-linux-gnu/libunbound.so.8 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
-cp -u /usr/lib/x86_64-linux-gnu/libduktape.so.207 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
-cp -u /usr/lib/x86_64-linux-gnu/libproxy.so.1 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
-cp -u /usr/lib/x86_64-linux-gnu/libevent-2.1.so.7 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
-cp -u /usr/lib/x86_64-linux-gnu/liblz.so.1 appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/
+for lib in /usr/lib/x86_64-linux-gnu/libwget.so.3; do
+    for dep in $(ldd $lib | awk '{if ($3 ~ /^\//) print $3}'); do
+        cp -u --parents "$dep" appimagebuild/LinuxToys.AppDir/usr/lib64/
+    done
+done
 
 # get git-core
 mkdir -p appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/lib/x86_64-linux-gnu/git-core
