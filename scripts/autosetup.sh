@@ -58,8 +58,16 @@ optimizer () {
         wget https://raw.githubusercontent.com/psygreg/linuxtoys/refs/heads/main/src/resources/other/autopatch.state
         sudo mv autopatch.state /.autopatch.state
     else
-        ## TODO UPDATER
-        nonfatal "$msg234"
+        # update configs if already optimized
+        cfg_host=$(rpm -qi "linuxtoys-cfg-atom" 2>/dev/null | grep "^Version" | awk '{print $3}')
+        cfg_server="1.1"
+        if [ "$cfg_host" != "$cfg_server" ]; then
+            wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-cfg-atom/rpmbuild/RPMS/x86_64/linuxtoys-cfg-atom-1.1-1.x86_64.rpm
+            rpm-ostree remove linuxtoys-cfg-atom
+            rpm-ostree install -yA linuxtoys-cfg-atom-1.1-1.x86_64.rpm
+        else
+            zenity --info --text "$msg281" --height=300 --width=300
+        fi
     fi
 
 }
