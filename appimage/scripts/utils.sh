@@ -12,6 +12,7 @@ usupermenu () {
     declare -a search_item=(
         "GPU Screen Recorder"
         "OBS Studio"
+        "Mission Center"
         "HandBrake"
         "Solaar"
         "OpenRazer"
@@ -34,6 +35,7 @@ usupermenu () {
         	--column="Apps" \
             FALSE "GPU Screen Recorder" \
             FALSE "OBS Studio" \
+            FALSE "Mission Center" \
             FALSE "HandBrake" \
             FALSE "Solaar" \
             FALSE "OpenRazer" \
@@ -48,7 +50,7 @@ usupermenu () {
             FALSE "Docker" \
             FALSE "Rusticl" \
             FALSE "ROCm" \
-            --height=720 --width=300 --separator="|")
+            --height=740 --width=300 --separator="|")
 
         if [ $? -ne 0 ]; then
             break
@@ -64,6 +66,7 @@ usupermenu () {
                     case $item in
                         "GPU Screen Recorder") _gsr="com.dec05eba.gpu_screen_recorder" ;;
                         "OBS Studio") _obs="com.obsproject.Studio" ;;
+                        "Mission Center") _mctl="io.missioncenter.MissionCenter" ;;
                         "HandBrake") _hndbrk="fr.handbrake.ghb" ;;
                         "Solaar") _slar="io.github.pwr_solaar.solaar" ;;
                         "OpenRazer") _oprzr="yes" ;;
@@ -177,7 +180,7 @@ obs_pipe () {
 # flatpak packages
 install_flatpak () {
 
-    local _flatpaks=($_slar $_obs $_hndbrk $_lact $_fseal $_sc $_qpw $_wrhs)
+    local _flatpaks=($_slar $_obs $_hndbrk $_lact $_fseal $_sc $_qpw $_wrhs $_mctl)
     if [[ -n "$_flatpaks" ]]; then
         if command -v flatpak &> /dev/null; then
             flatpak_in_lib
