@@ -3,7 +3,7 @@
 # install dependencies
 davinciboxdeps () {
 
-    local _packages=(podman lshw distrobox)
+    local _packages=(podman lshw)
     local amdGPU=$(lspci | grep -Ei 'vga|3d' | grep -Ei 'amd|ati|radeon|amdgpu')
     local nvGPU=$(lspci | grep -iE 'vga|3d' | grep -i nvidia)
     local intelGPU=$(lspci | grep -Ei 'vga|3d' | grep -Ei 'intel|iris|xe')
