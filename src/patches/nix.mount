@@ -5,7 +5,7 @@ After=mkdir-rootfs@nix.service
 Wants=mkdir-rootfs@nix.service
 Before=sockets.target
 After=ostree-remount.service
-BindsTo=var.mount
+After=local-fs.target
 
 [Mount]
 What=/var/lib/nix
