@@ -149,26 +149,30 @@ _lang_
 source ${langfile}
 sleep 1
 # menu
-while true; do
-	CHOICE=$(zenity --list --title="AutoDaVinciBox" \
-        --column="Which version do you want to install?" \
-		"Free" \
-		"Studio" \
-		"$msg070" \
-		--height=300 --width=300)
+if [[ "$ID" == "bazzite" ]] || [[ "$ID" == "aurora" ]] || [[ "$ID" == "bluefin" ]]; then
+	ujust install-resolve
+else 
+	while true; do
+		CHOICE=$(zenity --list --title="AutoDaVinciBox" \
+        	--column="Which version do you want to install?" \
+			"Free" \
+			"Studio" \
+			"$msg070" \
+			--height=300 --width=300)
 
-	if [ $? -ne 0 ]; then
-        break
-   	fi
+		if [ $? -ne 0 ]; then
+        	break
+   		fi
 
-	case $CHOICE in
-		"Free") _upkgname='davinci-resolve'
-    		inresolve
-			break ;;
-		"Studio") _upkgname='davinci-resolve-studio'
-	  		inresolve
-    		break ;;
-		"$msg070") break ;;
-		*) echo "Invalid Option" ;;
-	esac
-done
+		case $CHOICE in
+			"Free") _upkgname='davinci-resolve'
+    			inresolve
+				break ;;
+			"Studio") _upkgname='davinci-resolve-studio'
+	  			inresolve
+    			break ;;
+			"$msg070") break ;;
+			*) echo "Invalid Option" ;;
+		esac
+	done
+fi
