@@ -3,7 +3,7 @@
 # install dependencies
 davinciboxdeps () {
 
-    local _packages=(podman lshw)
+    local _packages=(toolbox podman lshw)
     local amdGPU=$(lspci | grep -Ei 'vga|3d' | grep -Ei 'amd|ati|radeon|amdgpu')
     local nvGPU=$(lspci | grep -iE 'vga|3d' | grep -i nvidia)
     local intelGPU=$(lspci | grep -Ei 'vga|3d' | grep -Ei 'intel|iris|xe')
@@ -134,9 +134,9 @@ inresolve () {
     sleep 1
     cd davincibox
     getresolve
-    unzip ${_archive_name}.zip
+    unzip $_archive_name.zip
     chmod +x setup.sh
-    ./setup.sh ${_archive_run_name}.run
+    ./setup.sh $_archive_run_name.run
 	zenity --info --title "AutoDaVinciBox" --text "Installation succesful." --height=300 --width=300
     cd ..
     rm -rf davincibox
