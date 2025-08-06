@@ -1,5 +1,19 @@
 #!/bin/bash
 # functions
+prep_point () {
+
+sudo tee /etc/ostree/prepare-root.conf <<'EOL'
+[composefs]
+enabled = yes
+[root]
+transient = true
+EOL
+    echo "NIXOSTREE_STATUS=1" > $HOME/.nixostree
+    zenity --info --text "Initial mountpoint setup complete. Run this installer again after the reboot to finish installing NixPKGs. Your system will reboot now." --width 360 --height 300
+    systemctl reboot
+
+}
+
 selinux_prep () {
 
     # add SELinux rules for nixpkgs
@@ -25,6 +39,12 @@ selinux_prep () {
 
 dir_prep () {
 
+    sudo chattr -i /
+    sleep 1
+    sudo mkdir -p /nix
+    sleep 1
+    sudo chattr +i /
+    sleep 1
     sudo mkdir -p /var/lib/nix
     # set SSL certificate for Nix
     wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/patches/override.conf
@@ -104,10 +124,21 @@ source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/h
 _lang_
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/lang/${langfile})
 if zenity --question --text "$msg282" --width 360 --height 300; then
-    cd $HOME
-    selinux_prep
-    dir_prep
-    nix_install
-    fix_mount
-    nix_icons
+    if [ ! -f "$HOME/.nixostree" ]; then
+        prep_point
+    else
+        source $HOME/.nixostree
+        if [ "$NIXOSTREE_STATUS" = "1" ]; then
+            cd $HOME
+            selinux_prep
+            dir_prep
+            nix_install
+            fix_mount
+            nix_icons
+            echo "NIXOSTREE_STATUS=2" > $HOME/.nixostree
+        elif [ "$NIXOSTREE_STATUS" = "2" ]; then
+            zenity --info --text "$msg281" --width 300 --height 300
+            exit 0
+        fi
+    fi
 fi
