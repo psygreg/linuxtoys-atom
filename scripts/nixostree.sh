@@ -58,7 +58,7 @@ dir_prep () {
     # refresh and enable new services
     sleep 1
     sudo systemctl daemon-reload
-    sleep 1
+    sleep 4
     sudo systemctl enable nix.mount
     sudo systemctl start nix.mount
     sudo restorecon -RF /nix
