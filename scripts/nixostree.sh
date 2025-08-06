@@ -1,4 +1,5 @@
 #!/bin/bash
+# TODO - wait for rpm-ostree to have the ability to create root mountpoints, for now this cannot work
 # functions
 prep_point () {
 
