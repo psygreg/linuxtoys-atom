@@ -25,6 +25,7 @@ selinux_prep () {
 
 dir_prep () {
 
+    sudo mkdir -p /var/lib/nix
     # set SSL certificate for Nix
     wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/patches/override.conf
     sudo mkdir -p /etc/systemd/system/nix-daemon.service.d
@@ -35,6 +36,7 @@ dir_prep () {
     sudo mv -f mkdir-rootfs@.service /etc/systemd/system/
     sudo mv -f nix.mount /etc/systemd/system/
     # refresh and enable new services
+    sleep 1
     sudo systemctl daemon-reload
     sleep 1
     sudo systemctl enable nix.mount
