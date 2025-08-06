@@ -102,6 +102,7 @@ nix_install () {
     sudo rm -f /etc/systemd/system/nix-daemon.{service,socket}
     sudo cp /nix/var/nix/profiles/default/lib/systemd/system/nix-daemon.{service,socket} /etc/systemd/system/
     sudo systemctl daemon-reload
+    sleep 4
     sudo systemctl enable --now nix-daemon.socket
     sleep 1
     # setting SELinux back to enforcing
