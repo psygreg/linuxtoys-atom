@@ -16,7 +16,7 @@ cp -f linuxtoys-atom.lib appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 cp -f src/lang/* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 
 # fetch dependencies
-cp -u /usr/bin/curl /usr/bin/wget /usr/bin/git /usr/bin/zenity /usr/bin/bash appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
+cp -u /usr/bin/curl /usr/bin/wget /usr/bin/git /usr/bin/zenity /usr/bin/bash /usr/lib/libwget.so.2 appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 cp -u /usr/bin/git-* appimagebuild/LinuxToys-Atom.AppDir/usr/bin/
 cp -u /etc/ssl/certs/ca-certificates.crt appimagebuild/LinuxToys-Atom.AppDir/etc/ssl/certs/
 
@@ -27,7 +27,7 @@ for bin in curl wget git bash zenity; do
     done
 done
 # libwget fix
-for lib in /usr/lib/x86_64-linux-gnu/libwget.so.3; do
+for lib in /usr/lib/libwget.so.2; do
     for dep in $(ldd $lib | awk '{if ($3 ~ /^\//) print $3}'); do
         cp -u --parents "$dep" appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/
     done
