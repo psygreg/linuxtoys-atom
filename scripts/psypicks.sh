@@ -60,7 +60,7 @@ if zenity --question --text "$msg280" --height=300 --width=300; then
         cd $HOME
         mkdir psypicks || exit 1
         cd psypicks || exit 1
-        packages=(steam steam-devices lutris vlc)
+        packages=(steam steam-devices lutris vlc distroshelf)
         if [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
             packages+=(gnome-tweaks)
         fi
