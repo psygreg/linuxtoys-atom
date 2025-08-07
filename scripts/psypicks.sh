@@ -60,13 +60,13 @@ if zenity --question --text "$msg280" --height=300 --width=300; then
         cd $HOME
         mkdir psypicks || exit 1
         cd psypicks || exit 1
-        packages=(steam steam-devices lutris vlc distroshelf)
+        packages=(steam steam-devices lutris vlc)
         if [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
             packages+=(gnome-tweaks)
         fi
         _install_
         get_heroic
-        flatpaks=(org.prismlauncher.PrismLauncher io.missioncenter.MissionCenter com.github.tchx84.Flatseal com.vysp3r.ProtonPlus com.dec05eba.gpu_screen_recorder com.github.Matoking.protontricks com.obsproject.Studio com.discordapp.Discord)
+        flatpaks=(com.ranfdev.DistroShelf org.prismlauncher.PrismLauncher io.missioncenter.MissionCenter com.github.tchx84.Flatseal com.vysp3r.ProtonPlus com.dec05eba.gpu_screen_recorder com.github.Matoking.protontricks com.obsproject.Studio com.discordapp.Discord)
         if [[ "$XDG_CURRENT_DESKTOP" == *"GNOME"* ]]; then
             flatpaks+=(com.mattjakeman.ExtensionManager)
         fi
