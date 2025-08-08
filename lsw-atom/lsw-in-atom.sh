@@ -1,19 +1,14 @@
 #!/bin/bash
 
-# docker installation
-docker_install () {
+# podman installation
+pdm_install () {
 
-		curl -O https://download.docker.com/linux/fedora/docker-ce.repo
-		sudo install -o 0 -g 0 -m644 docker-ce.repo /etc/yum.repos.d/docker-ce.repo
-		local _packages=(docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin)
+		local _packages=(podman podman-compose)
 		_install_
-		sudo usermod -aG docker $USER
-		sudo systemctl enable --now docker || nonfatal "Error: failed to start docker service" && exit 1
-		sudo systemctl enable --now docker.socket || nonfatal "Error: failed to start docker socket" && exit 2
 
 }
 
-# windows docker container setup
+# windows podman container setup
 win_install () {
 
 		local _packages=(dialog netcat freerdp iproute libnotify)
@@ -55,13 +50,13 @@ win_install () {
     sed -i "s|^\(\s*CPU_CORES:\s*\).*|\1\"${_wincpu}\"|" compose.yaml
     sed -i "s|^\(\s*DISK_SIZE:\s*\).*|\1\"${_winsize}\"|" compose.yaml
 	if command -v konsole &> /dev/null; then
-        setsid konsole --noclose -e  "sudo docker compose --file ./compose.yaml up" >/dev/null 2>&1 < /dev/null &
+        setsid konsole --noclose -e  "sudo podman-compose --file ./compose.yaml up" >/dev/null 2>&1 < /dev/null &
 	elif command -v ptyxis &> /dev/null; then
-		setsid ptyxis bash -c "sudo docker compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
+		setsid ptyxis bash -c "sudo podman-compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
     elif command -v gnome-terminal &> /dev/null; then
-        setsid gnome-terminal -- bash -c "sudo docker compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
+        setsid gnome-terminal -- bash -c "sudo podman-compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
     else
-		nonfatal "No compatible terminal emulator found to launch Docker Compose."
+		nonfatal "No compatible terminal emulator found to launch Podman Compose."
         exit 4
     fi
 
@@ -71,12 +66,12 @@ win_install () {
 lsw_install () {
 
 	if zenity --question --title "Setup" --text "Is the Windows installation finished?" --height=300 --width=300; then
-		wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/rpmbuild/RPMS/x86_64/lsw-atom-shortcuts-1.0-1.x86_64.rpm
-		rpm-ostree install -yA lsw-atom-shortcuts-1.0-1.x86_64.rpm
+		wget https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/rpmbuild/RPMS/x86_64/lsw-atom-shortcuts-1.1-1.x86_64.rpm
+		rpm-ostree install -yA lsw-atom-shortcuts-1.1-1.x86_64.rpm
 		exit 0
 	else
-		if zenity --question --title "Setup" --text "Do you want to revert all changes? WARNING: This will ERASE all Docker Compose data!" --height=300 --width=360; then
-        	sudo docker compose down --rmi=all --volumes
+		if zenity --question --title "Setup" --text "Do you want to revert all changes? WARNING: This will ERASE all Podman Compose data!" --height=300 --width=360; then
+        	sudo podman-compose down --rmi=all --volumes
         	exit 7
 		fi
 	fi
@@ -115,11 +110,11 @@ hwcheck () {
 source <(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/linuxtoys-atom.lib)
 sleep 1
 hwcheck
-if command -v docker &> /dev/null; then
+if command -v podman &> /dev/null; then
 		win_install
 		lsw_install
 else
-		docker_install
+		pdm_install
 		win_install
 		lsw_install
 fi

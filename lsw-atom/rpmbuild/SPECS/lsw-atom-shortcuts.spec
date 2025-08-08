@@ -1,5 +1,5 @@
 Name:           lsw-atom-shortcuts
-Version:        1.0
+Version:        1.1
 Release:        1
 Summary:        Linux Subsystem for Windows
 BuildArch:      x86_64
@@ -7,7 +7,7 @@ BuildArch:      x86_64
 License:        GPL3
 Source0:        lsw-atom-shortcuts-%{version}.tar.xz
 
-Requires:       bash docker-ce docker-ce-cli docker-compose-plugin dialog freerdp netcat
+Requires:       bash podman podman-compose dialog freerdp netcat
 BuildRequires:  desktop-file-utils
 
 %description
@@ -52,5 +52,5 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/applications/lsw-desktop.desktop
 
 %changelog
-* Thu Jul  17 2025 Victor Gregory <psygreg@pm.me> - 1.0
-- Linux Subsystem for Windows port for Fedora Silverblue/Kinoite
+* Fri Aug 8 2025 Victor Gregory <psygreg@pm.me> - 1.1
+- Containers now on Podman
