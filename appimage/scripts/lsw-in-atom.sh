@@ -27,7 +27,7 @@ win_install () {
     _wincpu="$_ccpu"
     # get C size
     _csize=$(zenity --entry --title="LSW" --text="Enter Windows disk (C:) size in GB. Leave empty to use 50GB."  --entry-text "50" --height=300 --width=300)
-    local available_gb=$(df -BG "/" | awk 'NR==2 { gsub("G","",$4); print $4 }')
+    local available_gb=$(df -BG "$HOME/.local" | awk 'NR==2 { gsub("G","",$4); print $4 }')
     if [ -z "$_csize" ]; then
         _winsize="50"
     else
