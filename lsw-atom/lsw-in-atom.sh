@@ -11,12 +11,12 @@ pdm_install () {
 # windows podman container setup
 win_install () {
 
-		local _packages=(dialog netcat freerdp iproute libnotify)
-		_install_
-		cd $HOME/.config/winapps
-		wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/compose.yaml
-		wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/winapps.conf
-		# make necessary adjustments to compose file
+	local _packages=(dialog netcat freerdp iproute libnotify)
+	_install_
+	cd $HOME/.config/winapps
+	wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/compose.yaml
+	wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/winapps.conf
+	# make necessary adjustments to compose file
     # Cap at 16GB
     if (( _cram > 16 )); then
         _winram=16
@@ -50,11 +50,11 @@ win_install () {
     sed -i "s|^\(\s*CPU_CORES:\s*\).*|\1\"${_wincpu}\"|" compose.yaml
     sed -i "s|^\(\s*DISK_SIZE:\s*\).*|\1\"${_winsize}\"|" compose.yaml
 	if command -v konsole &> /dev/null; then
-        setsid konsole --noclose -e  "sudo podman-compose --file ./compose.yaml up" >/dev/null 2>&1 < /dev/null &
+        nohup konsole --new-tab --hold -e bash -c "cd '$PWD' && sudo podman-compose --file ./compose.yaml up" >/dev/null 2>&1 &
 	elif command -v ptyxis &> /dev/null; then
-		setsid ptyxis bash -c "sudo podman-compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
+		nohup ptyxis --new-window -- bash -c "cd '$PWD' && sudo podman-compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 &
     elif command -v gnome-terminal &> /dev/null; then
-        setsid gnome-terminal -- bash -c "sudo podman-compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 < /dev/null &
+        nohup gnome-terminal --window --working-directory="$PWD" -- bash -c "sudo podman-compose --file ./compose.yaml up; exec bash" >/dev/null 2>&1 &
     else
 		nonfatal "No compatible terminal emulator found to launch Podman Compose."
         exit 4
