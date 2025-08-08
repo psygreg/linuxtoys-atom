@@ -29,7 +29,7 @@ services:
     cap_add:
       - NET_ADMIN  # Add network permission
     stop_grace_period: 120s # Wait 120 seconds before sending SIGTERM when attempting to shut down the Windows VM.
-    restart: no # Restart the Windows VM if the exit code indicates an error.
+    restart: "no" # Restart the Windows VM if the exit code indicates an error.
     volumes:
       - data:/storage # Mount volume 'data' to use as Windows 'C:' drive.
       - ${HOME}:/shared # Mount Linux user home directory @ '\\host.lan\Data'.
