@@ -59,7 +59,7 @@ gsupermenu () {
             FALSE "Oversteer" \
             FALSE "WiVRn" \
             FALSE "Wine - ${msg112}" \
-            --height=830 --width=310 --separator="|")
+            --height=830 --width=360 --separator="|")
 
         if [ $? -ne 0 ]; then
             break
@@ -157,8 +157,10 @@ install_flatpak () {
             _flatpak_
             # add repository and install GFN app
             if [[ -n "$_gfn" ]]; then
-                flatpak remote-add --user --if-not-exists GeForceNOW
+                flatpak install --or-update --user flathub org.freedesktop.Sdk//24.08
+                flatpak remote-add --user --if-not-exists GeForceNOW https://international.download.nvidia.com/GFNLinux/flatpak/geforcenow.flatpakrepo
                 flatpak install -y --user GeForceNOW com.nvidia.geforcenow
+                flatpak override --user --nosocket=wayland com.nvidia.geforcenow 
             fi
             # add udev rules for Oversteer
             if [[ -n "$_steer" ]]; then
@@ -178,8 +180,10 @@ install_flatpak () {
                 flatpak_in_lib
                 _flatpak_
                 if [[ -n "$_gfn" ]]; then
-                    flatpak remote-add --user --if-not-exists GeForceNOW
+                    flatpak install --or-update --user flathub org.freedesktop.Sdk//24.08
+                    flatpak remote-add --user --if-not-exists GeForceNOW https://international.download.nvidia.com/GFNLinux/flatpak/geforcenow.flatpakrepo
                     flatpak install -y --user GeForceNOW com.nvidia.geforcenow
+                    flatpak override --user --nosocket=wayland com.nvidia.geforcenow 
                 fi
                 if [[ -n "$_steer" ]]; then
                     sudo wget https://github.com/berarma/oversteer/raw/refs/heads/master/data/udev/99-fanatec-wheel-perms.rules -P /etc/udev/rules.d
