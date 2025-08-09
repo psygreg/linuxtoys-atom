@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=LSW On
+Type=Application
+Exec=/usr/bin/lsw/lsw-on.sh
+Terminal=true
+Icon=/usr/share/icons/hicolor/scalable/apps/lsw-on.png
+Comment=Turn on Linux Subsystem for Windows
+NoDisplay=false
+Categories=Development

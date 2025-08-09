@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=LSW Off
+Type=Application
+Exec=/usr/bin/lsw/lsw-off.sh
+Terminal=true
+Icon=/usr/share/icons/hicolor/scalable/apps/lsw-off.png
+Comment=Turn off Linux Subsystem for Windows
+NoDisplay=false
+Categories=Development

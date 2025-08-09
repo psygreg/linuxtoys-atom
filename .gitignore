@@ -1,0 +1,5 @@
+# appimage build files
+/LinuxToys_Atom*.AppImage
+/appimagebuild/LinuxToys-Atom.AppDir/etc/*
+/appimagebuild/LinuxToys-Atom.AppDir/usr/bin/*
+/appimagebuild/LinuxToys-Atom.AppDir/usr/lib64/*

@@ -7,7 +7,7 @@ fatal() {
 }
 
 # updater
-current_ltver="2.3"
+current_ltver="2.4"
 ver_upd () {
     local ver
     ver=$(curl -s https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/src/ver)
@@ -58,7 +58,7 @@ while true; do
         "$msg279" \
         "" \
         "${msg124}" \
-        "GitHub" \
+        "Wiki" \
         "${msg275}" \
         "${msg059}" \
         --height=530 --width=360)
@@ -79,7 +79,7 @@ while true; do
     "$msg279") script="psypicks" && _invoke_ ;;
     # 7) subscript="uniwine" && _invoke_ ;; -- disabled option
     "${msg124}") zenity --info --title "LinuxToys Atom v${current_ltver}" --text "$msg125" --height=300 --width=300;;
-    "GitHub") xdg-open https://github.com/psygreg/linuxtoys ;;
+    "Wiki") xdg-open https://github.com/psygreg/linuxtoys/wiki ;;
     "${msg275}") xdg-open https://ko-fi.com/psygreg ;;
     "${msg059}") break ;;
     *) echo "Invalid Option" ;;
