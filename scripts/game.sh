@@ -26,6 +26,7 @@ gsupermenu () {
         "Lossless Scaling - LSFG-VK"
         "Gamescope"
         "Mangohud"
+        "MangoJuice"
         "GOverlay"
         "GeForce NOW"
         "Shader Booster"
@@ -53,6 +54,7 @@ gsupermenu () {
             FALSE "Lossless Scaling - LSFG-VK" \
             FALSE "Gamescope" \
             FALSE "Mangohud" \
+            FALSE "MangoJuice" \
             FALSE "GOverlay" \
             FALSE "GeForce NOW App" \
             FALSE "Shader Booster" \
@@ -87,6 +89,7 @@ gsupermenu () {
                         "Lossless Scaling - LSFG-VK") _lsfgvk="yes" ;;
                         "Gamescope") _gscope="gamescope" ;;
                         "Mangohud") _mhud="mangohud" ;;
+                        "MangoJuice") _mgju="MangoJuice" ;;
                         "GOverlay") _govl="goverlay" ;;
                         "Shader Booster") _sboost="yes" ;;
                         "WiVRn") _wivrn="io.github.wivrn.wivrn" ;;
@@ -131,7 +134,7 @@ gsupermenu () {
 # native packages
 install_native () {
 
-    local _packages=($_gmode $_govl $_gscope $_mhud)
+    local _packages=($_gmode $_govl $_gscope $_mhud $_mgju)
     _install_
     # add proper versions of gamescope and mangohud on flatpak runtimes
     if [[ -n "$_gscope" ]]; then
@@ -144,6 +147,10 @@ install_native () {
             flatpak install --or-update --system -y com.valvesoftware.Steam.VulkanLayer.MangoHud/x86_64/stable org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08 org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08
         fi
     fi
+     if [[ -n "$_mgju" ]]; then
+        if command -v flatpak &> /dev/null; then
+           flatpak install --or-update --system -y io.github.radiolamp.mangojuice
+         fi  
 
 }
 
