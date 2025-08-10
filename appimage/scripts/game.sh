@@ -26,6 +26,7 @@ gsupermenu () {
         "Lossless Scaling - LSFG-VK"
         "Gamescope"
         "Mangohud"
+        "MangoJuice"
         "GOverlay"
         "GeForce NOW"
         "Shader Booster"
@@ -53,13 +54,14 @@ gsupermenu () {
             FALSE "Lossless Scaling - LSFG-VK" \
             FALSE "Gamescope" \
             FALSE "Mangohud" \
+            FALSE "MangoJuice" \
             FALSE "GOverlay" \
             FALSE "GeForce NOW App" \
             FALSE "Shader Booster" \
             FALSE "Oversteer" \
             FALSE "WiVRn" \
             FALSE "Wine - ${msg112}" \
-            --height=830 --width=360 --separator="|")
+            --height=750 --width=360 --separator="|")
 
         if [ $? -ne 0 ]; then
             break
@@ -93,6 +95,7 @@ gsupermenu () {
                         "Oversteer") _steer="io.github.berarma.Oversteer" ;;
                         "GeForce NOW") _gfn="yes" ;;
                         "Wine - ${msg112}") _runner="runners" ;;
+                        "MangoJuice") _mgju="io.github.radiolamp.mangojuice" ;;
                     esac
                 fi
             done
@@ -150,7 +153,7 @@ install_native () {
 # flatpak packages
 install_flatpak () {
 
-    local _flatpaks=($_lutris $_heroic $_pp $_stl $_sobst $_disc $_wivrn $_steer $_mcbe $_osuf $_prism $_steam)
+    local _flatpaks=($_lutris $_heroic $_pp $_stl $_sobst $_disc $_wivrn $_steer $_mcbe $_osuf $_prism $_steam $_mgju)
     if [[ -n "$_flatpaks" ]] || [[ -n "$_steam" ]] || [[ -n "$_gfn" ]]; then
         if command -v flatpak &> /dev/null; then
             flatpak_in_lib
