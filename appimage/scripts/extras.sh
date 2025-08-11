@@ -74,32 +74,7 @@ nvidia_in () {
             fi
 
             case $CHOICE in
-            "$msg269") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
-                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-                fi
-                if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
-                    sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-                fi
-                if sudo mokutil --sb-state | grep -q "SecureBoot enabled"; then
-                    if ! rpm -qi "akmods-keys" &>/dev/null; then
-                        _packages=(rpmdevtools akmods)
-                        _install_
-                        sudo kmodgenca
-                        sudo mokutil --import /etc/pki/akmods/certs/public_key.der
-                        git clone https://github.com/CheariX/silverblue-akmods-keys
-                        cd silverblue-akmods-keys
-                        echo "%_with_kmod_nvidia_open 1" >> macros.kmodtool
-                        sudo bash setup.sh
-                        rpm-ostree install -yA akmods-keys-0.0.2-8.fc$(rpm -E %fedora).noarch.rpm
-                    fi
-                fi
-                rpm-ostree install akmod-nvidia-open xorg-x11-drv-nvidia-cuda
-                sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1
-                local title="Nvidia Drivers"
-                local msg="$msg036"
-                _msgbox_
-                exit 0 ;;
-            "$msg068") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
+            "$msg068" | "$msg269") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
                     sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
                 fi
                 if ! rpm -qi "rpmfusion-nonfree-release" &>/dev/null; then
