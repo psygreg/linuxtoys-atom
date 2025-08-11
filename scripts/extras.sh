@@ -94,9 +94,7 @@ nvidia_in () {
                 fi
                 rpm-ostree install akmod-nvidia xorg-x11-drv-nvidia-cuda
                 sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1
-                local title="Nvidia Drivers"
-                local msg="$msg036"
-                _msgbox_
+                zenity --info --title "Nvidia Drivers" --text "$msg036" --width 300 --height 300
                 exit 0 ;;
             "$msg069") if ! rpm -qi "rpmfusion-free-release" &>/dev/null; then
                     sudo rpm-ostree install -yA https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
@@ -118,9 +116,7 @@ nvidia_in () {
                 fi
                 rpm-ostree install xorg-x11-drv-nvidia-470xx akmod-nvidia-470xx xorg-x11-drv-nvidia-470xx-cuda
                 sudo rpm-ostree kargs --append=rd.driver.blacklist=nouveau,nova_core --append=modprobe.blacklist=nouveau --append=nvidia-drm.modeset=1
-                local title="Nvidia Drivers"
-                local msg="$msg036"
-                _msgbox_
+                zenity --info --title "Nvidia Drivers" --text "$msg036" --width 300 --height 300
                 exit 0;;
             "$msg070") break ;;
             *) echo "Invalid Option" ;;
