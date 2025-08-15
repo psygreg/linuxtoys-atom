@@ -13,6 +13,7 @@ win_install () {
 
 	local _packages=(dialog netcat freerdp iproute libnotify)
 	_install_
+	mkdir -p $HOME/.config/winapps
 	cd $HOME/.config/winapps
 	wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/compose.yaml
 	wget -nc https://raw.githubusercontent.com/psygreg/linuxtoys-atom/refs/heads/main/lsw-atom/winapps/winapps.conf
